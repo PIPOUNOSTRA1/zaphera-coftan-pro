@@ -2,7 +2,7 @@ const http = require('http');
 const fs   = require('fs');
 const path = require('path');
 
-const ROOT = path.join(__dirname, 'site_pro');
+const ROOT = path.join(__dirname, 'docs');
 const PORT = 3030;
 
 const MIME = {

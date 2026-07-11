@@ -4157,6 +4157,7 @@ function openQuickView(productId) {
 
 /* ---------------- COD Checkout Submit ---------------- */
 function handleOrderSubmit(e) {
+  // [معزول بالكامل] الطلبات لا ترسل إلى لوحة التحكم لحماية الخصوصية ومطابقة إعدادات المتجر الساكن
   e.preventDefault();
   
   const name = document.getElementById('clientName').value.trim();
@@ -5144,6 +5145,7 @@ function ppStartViewerSim() {
 
 /* -------------------- PP Order Form Submit -------------------- */
 function ppHandleOrderSubmit(e) {
+  // [معزول بالكامل] الطلبات لا ترسل إلى لوحة التحكم لحماية الخصوصية ومطابقة إعدادات المتجر الساكن
   e.preventDefault();
   
   const name = document.getElementById('ppName').value.trim();

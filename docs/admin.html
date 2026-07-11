@@ -206,7 +206,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="nav-section">الرئيسية</div>
     <a class="nav-item active" onclick="showPage('dashboard',this)"><span class="ni">📊</span> لوحة التحكم</a>
     <div class="nav-section">المتجر</div>
-    <a class="nav-item" onclick="showPage('orders',this)"><span class="ni">📦</span> الطلبات<span class="nav-badge">12</span></a>
+    <a class="nav-item" onclick="showPage('orders',this)"><span class="ni">📦</span> الطلبات<span class="nav-badge">0</span></a>
     <a class="nav-item" onclick="showPage('products',this)"><span class="ni">👘</span> المنتجات</a>
     <a class="nav-item" onclick="showPage('customers',this)"><span class="ni">👥</span> العميلات</a>
     <div class="nav-section">التحليلات</div>
@@ -239,52 +239,40 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val">287,400<span style="font-size:.9rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إجمالي الإيرادات — هذا الشهر</div><div class="kpi-change up">▲ 18.4% عن الشهر الماضي</div></div>
-        <div class="kpi-card"><div class="kpi-icon gr">📦</div><div class="kpi-val">142</div><div class="kpi-label">إجمالي الطلبات</div><div class="kpi-change up">▲ 24 طلباً جديداً هذا الأسبوع</div></div>
-        <div class="kpi-card"><div class="kpi-icon b">👥</div><div class="kpi-val">89</div><div class="kpi-label">عميلات جديدات</div><div class="kpi-change up">▲ 11% هذا الشهر</div></div>
-        <div class="kpi-card"><div class="kpi-icon o">⏳</div><div class="kpi-val">12</div><div class="kpi-label">طلبات معلّقة</div><div class="kpi-change dn">▼ تحتاج مراجعة عاجلة</div></div>
+        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val">0<span style="font-size:.9rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إجمالي الإيرادات — هذا الشهر</div><div class="kpi-change">لا توجد مبيعات حالياً</div></div>
+        <div class="kpi-card"><div class="kpi-icon gr">📦</div><div class="kpi-val">0</div><div class="kpi-label">إجمالي الطلبات</div><div class="kpi-change">لا توجد طلبات جديدة</div></div>
+        <div class="kpi-card"><div class="kpi-icon b">👥</div><div class="kpi-val">0</div><div class="kpi-label">عميلات جديدات</div><div class="kpi-change">لا توجد عميلات جدد</div></div>
+        <div class="kpi-card"><div class="kpi-icon o">⏳</div><div class="kpi-val">0</div><div class="kpi-label">طلبات معلّقة</div><div class="kpi-change">كل شيء مستقر</div></div>
       </div>
       <div class="dash-grid">
         <div class="card">
-          <div class="card-head"><div class="card-title">📈 الإيرادات — آخر 7 أشهر (دج)</div><span class="card-more">تفصيل ←</span></div>
-          <div class="chart-bars" id="revenueChart"></div>
+          <div class="card-head"><div class="card-title">📈 الإيرادات — آخر 7 أشهر (دج)</div></div>
+          <div class="chart-bars" id="revenueChart" style="display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.85rem;">لا توجد بيانات مبيعات لعرض المخطط</div>
           <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--text2);">الإيرادات الشهرية بالدينار الجزائري</div>
         </div>
         <div class="card">
           <div class="card-head"><div class="card-title">🔔 آخر النشاطات</div></div>
-          <div class="activity-list">
-            <div class="act-item"><div class="act-dot gold"></div><div><div class="act-text"><strong>طلب جديد #ZAP-0142</strong> — فاطمة ب. من وهران</div><div class="act-time">منذ 3 دقائق</div></div></div>
-            <div class="act-item"><div class="act-dot green"></div><div><div class="act-text"><strong>تأكيد دفع</strong> — طلب #ZAP-0139 — قفطان ملكي</div><div class="act-time">منذ 22 دقيقة</div></div></div>
-            <div class="act-item"><div class="act-dot blue"></div><div><div class="act-text"><strong>شحن الطلب</strong> #ZAP-0134 إلى قسنطينة</div><div class="act-time">منذ ساعة</div></div></div>
-            <div class="act-item"><div class="act-dot gold"></div><div><div class="act-text"><strong>عميلة جديدة</strong> — نور الدين ع. — الجزائر العاصمة</div><div class="act-time">منذ ساعتين</div></div></div>
-            <div class="act-item"><div class="act-dot green"></div><div><div class="act-text"><strong>تسليم مكتمل</strong> — طلب #ZAP-0128 — تلمسان</div><div class="act-time">منذ 4 ساعات</div></div></div>
-            <div class="act-item"><div class="act-dot red"></div><div><div class="act-text"><strong>رفض طلب</strong> #ZAP-0127 — الرقم غير متاح</div><div class="act-time">منذ أمس</div></div></div>
+          <div class="activity-list" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;color:var(--text2);font-size:.85rem;">
+            لا توجد نشاطات حالياً
           </div>
         </div>
       </div>
       <div class="dash-grid-3">
         <div class="card">
           <div class="card-head"><div class="card-title">👑 أفضل العميلات</div></div>
-          <div class="client-row"><div class="client-av">ف</div><div><div class="client-name">فاطمة بوعلام</div><div class="client-orders">7 طلبات — وهران</div></div><div class="client-spent">68,500 دج</div></div>
-          <div class="client-row"><div class="client-av">ن</div><div><div class="client-name">نور الهدى مولاي</div><div class="client-orders">5 طلبات — الجزائر</div></div><div class="client-spent">52,000 دج</div></div>
-          <div class="client-row"><div class="client-av">م</div><div><div class="client-name">مريم عيسى</div><div class="client-orders">5 طلبات — قسنطينة</div></div><div class="client-spent">47,300 دج</div></div>
-          <div class="client-row"><div class="client-av">ه</div><div><div class="client-name">هناء بن عمر</div><div class="client-orders">4 طلبات — تيزي وزو</div></div><div class="client-spent">39,800 دج</div></div>
+          <div style="text-align:center;padding:40px 0;color:var(--text2);font-size:.85rem;">لا توجد عميلات حالياً</div>
         </div>
         <div class="card">
           <div class="card-head"><div class="card-title">🏆 أكثر المنتجات مبيعاً</div></div>
-          <div class="stat-row"><span class="stat-key">👘 القفطان الملكي الذهبي</span><span class="stat-val">38 وحدة</span></div>
-          <div class="stat-row"><span class="stat-key">🌸 كراكو السهرة الفضي</span><span class="stat-val">27 وحدة</span></div>
-          <div class="stat-row"><span class="stat-key">💍 فستان الزفاف الأبيض</span><span class="stat-val">19 وحدة</span></div>
-          <div class="stat-row"><span class="stat-key">🌙 القفطان الأسود المطرز</span><span class="stat-val">15 وحدة</span></div>
-          <div class="stat-row"><span class="stat-key">✨ كراكو التراث الجزائري</span><span class="stat-val">12 وحدة</span></div>
+          <div style="text-align:center;padding:40px 0;color:var(--text2);font-size:.85rem;">لا توجد مبيعات حالياً</div>
         </div>
         <div class="card">
           <div class="card-head"><div class="card-title">📊 ملخص حالات الطلبات</div></div>
-          <div class="stat-row"><span class="stat-key">⏳ معلّقة</span><span class="badge pending">12 طلب</span></div>
-          <div class="stat-row"><span class="stat-key">✅ مؤكّدة</span><span class="badge confirmed">31 طلب</span></div>
-          <div class="stat-row"><span class="stat-key">🚚 في الشحن</span><span class="badge shipped">28 طلب</span></div>
-          <div class="stat-row"><span class="stat-key">📬 تم التسليم</span><span class="badge delivered">67 طلب</span></div>
-          <div class="stat-row"><span class="stat-key">❌ ملغاة</span><span class="badge cancelled">4 طلبات</span></div>
+          <div class="stat-row"><span class="stat-key">⏳ معلّقة</span><span class="badge pending">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">✅ مؤكّدة</span><span class="badge confirmed">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">🚚 في الشحن</span><span class="badge shipped">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">📬 تم التسليم</span><span class="badge delivered">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">❌ ملغاة</span><span class="badge cancelled">0 طلب</span></div>
         </div>
       </div>
     </div>
@@ -292,16 +280,16 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <!-- ORDERS -->
     <div class="page" id="page-orders">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <div><div style="font-size:1.15rem;font-weight:700;">📦 إدارة الطلبات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;">142 طلب إجمالاً — 12 معلّق</div></div>
+        <div><div style="font-size:1.15rem;font-weight:700;">📦 إدارة الطلبات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;">0 طلب إجمالاً — 0 معلّق</div></div>
         <button class="btn btn-gold" onclick="document.getElementById('addOrderModal').classList.add('open')">+ إضافة طلب يدوي</button>
       </div>
       <div class="tab-bar">
-        <button class="tab active" onclick="filterOrders('all',this)">الكل (142)</button>
-        <button class="tab" onclick="filterOrders('pending',this)">⏳ معلّقة (12)</button>
-        <button class="tab" onclick="filterOrders('confirmed',this)">✅ مؤكّدة (31)</button>
-        <button class="tab" onclick="filterOrders('shipped',this)">🚚 في الشحن (28)</button>
-        <button class="tab" onclick="filterOrders('delivered',this)">📬 مُسلَّمة (67)</button>
-        <button class="tab" onclick="filterOrders('cancelled',this)">❌ ملغاة (4)</button>
+        <button class="tab active" onclick="filterOrders('all',this)">الكل (0)</button>
+        <button class="tab" onclick="filterOrders('pending',this)">⏳ معلّقة (0)</button>
+        <button class="tab" onclick="filterOrders('confirmed',this)">✅ مؤكّدة (0)</button>
+        <button class="tab" onclick="filterOrders('shipped',this)">🚚 في الشحن (0)</button>
+        <button class="tab" onclick="filterOrders('delivered',this)">📬 مُسلَّمة (0)</button>
+        <button class="tab" onclick="filterOrders('cancelled',this)">❌ ملغاة (0)</button>
       </div>
       <div class="card"><div class="table-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميلة</th><th>الهاتف</th><th>الولاية</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>التاريخ</th><th>إجراء</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
     </div>
@@ -325,12 +313,12 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="page" id="page-analytics">
       <div style="font-size:1.15rem;font-weight:700;margin-bottom:20px;">📈 تحليلات المبيعات</div>
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val">287,400<span style="font-size:.8rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إيرادات هذا الشهر</div><div class="kpi-change up">▲ 18.4%</div></div>
-        <div class="kpi-card"><div class="kpi-icon gr">🛍️</div><div class="kpi-val">2,024<span style="font-size:.8rem;color:var(--gold);"> دج</span></div><div class="kpi-label">متوسط قيمة الطلب</div><div class="kpi-change up">▲ 5.2%</div></div>
-        <div class="kpi-card"><div class="kpi-icon b">🔄</div><div class="kpi-val">34%</div><div class="kpi-label">معدل العميلات العائدات</div><div class="kpi-change up">▲ 8%</div></div>
-        <div class="kpi-card"><div class="kpi-icon o">⭐</div><div class="kpi-val">4.9</div><div class="kpi-label">متوسط تقييم العميلات</div><div class="kpi-change up">▲ ممتاز</div></div>
+        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val">0<span style="font-size:.8rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إيرادات هذا الشهر</div><div class="kpi-change">لا توجد بيانات</div></div>
+        <div class="kpi-card"><div class="kpi-icon gr">🛍️</div><div class="kpi-val">0<span style="font-size:.8rem;color:var(--gold);"> دج</span></div><div class="kpi-label">متوسط قيمة الطلب</div><div class="kpi-change">لا توجد بيانات</div></div>
+        <div class="kpi-card"><div class="kpi-icon b">🔄</div><div class="kpi-val">0%</div><div class="kpi-label">معدل العميلات العائدات</div><div class="kpi-change">لا توجد بيانات</div></div>
+        <div class="kpi-card"><div class="kpi-icon o">⭐</div><div class="kpi-val">5.0</div><div class="kpi-label">متوسط تقييم العميلات</div><div class="kpi-change">ممتاز</div></div>
       </div>
-      <div class="card"><div class="card-head"><div class="card-title">📊 الإيرادات الشهرية — 2026</div></div><div class="chart-bars" id="analyticsChart" style="height:200px;"></div></div>
+      <div class="card"><div class="card-head"><div class="card-title">📊 الإيرادات الشهرية — 2026</div></div><div class="chart-bars" id="analyticsChart" style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.85rem;">لا توجد بيانات مبيعات لعرض المخطط</div></div>
     </div>
 
     <!-- WILAYAS -->
@@ -340,12 +328,12 @@ tr:hover td{background:rgba(255,255,255,.02);}
         <div class="card"><div class="card-head"><div class="card-title">أعلى 10 ولايات مبيعاً</div></div><div class="wilaya-list" id="wilayaList"></div></div>
         <div class="card">
           <div class="card-head"><div class="card-title">🏆 ملخص الولايات</div></div>
-          <div class="stat-row"><span class="stat-key">إجمالي الولايات الموصَّل إليها</span><span class="stat-val">32 ولاية</span></div>
-          <div class="stat-row"><span class="stat-key">الولاية الأعلى مبيعاً</span><span class="stat-val" style="color:var(--gold);">الجزائر العاصمة</span></div>
-          <div class="stat-row"><span class="stat-key">أسرع ولاية تسليماً</span><span class="stat-val">البليدة</span></div>
-          <div class="stat-row"><span class="stat-key">طلبات من الشرق</span><span class="stat-val">39%</span></div>
-          <div class="stat-row"><span class="stat-key">طلبات من الغرب</span><span class="stat-val">28%</span></div>
-          <div class="stat-row"><span class="stat-key">طلبات من الجنوب</span><span class="stat-val">8%</span></div>
+          <div class="stat-row"><span class="stat-key">إجمالي الولايات الموصَّل إليها</span><span class="stat-val">0 ولاية</span></div>
+          <div class="stat-row"><span class="stat-key">الولاية الأعلى مبيعاً</span><span class="stat-val" style="color:var(--gold);">لا توجد</span></div>
+          <div class="stat-row"><span class="stat-key">أسرع ولاية تسليماً</span><span class="stat-val">لا توجد</span></div>
+          <div class="stat-row"><span class="stat-key">طلبات من الشرق</span><span class="stat-val">0%</span></div>
+          <div class="stat-row"><span class="stat-key">طلبات من الغرب</span><span class="stat-val">0%</span></div>
+          <div class="stat-row"><span class="stat-key">طلبات من الجنوب</span><span class="stat-val">0%</span></div>
         </div>
       </div>
     </div>
@@ -425,11 +413,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
-const ORDERS=[{id:'ZAP-0142',name:'فاطمة بوعلام',phone:'0550123456',wilaya:'وهران',product:'القفطان الملكي الذهبي',amount:18500,status:'pending',date:'10/07/2026'},{id:'ZAP-0141',name:'نور الهدى مولاي',phone:'0661234567',wilaya:'الجزائر',product:'فستان الزفاف الأبيض',amount:35000,status:'confirmed',date:'09/07/2026'},{id:'ZAP-0140',name:'مريم عيسى',phone:'0770987654',wilaya:'قسنطينة',product:'كراكو السهرة الفضي',amount:12000,status:'shipped',date:'09/07/2026'},{id:'ZAP-0139',name:'هناء بن عمر',phone:'0556789012',wilaya:'تيزي وزو',product:'القفطان الأسود المطرز',amount:22000,status:'delivered',date:'08/07/2026'},{id:'ZAP-0138',name:'سلمى رمضان',phone:'0663456789',wilaya:'سطيف',product:'كراكو التراث الجزائري',amount:9800,status:'delivered',date:'07/07/2026'},{id:'ZAP-0137',name:'إيمان كريم',phone:'0779876543',wilaya:'بجاية',product:'القفطان الملكي الذهبي',amount:18500,status:'pending',date:'07/07/2026'},{id:'ZAP-0136',name:'زينب حمود',phone:'0554321098',wilaya:'تلمسان',product:'فستان الزفاف الأبيض',amount:35000,status:'confirmed',date:'06/07/2026'},{id:'ZAP-0135',name:'أسماء بلقاسم',phone:'0665432109',wilaya:'عنابة',product:'كراكو السهرة الفضي',amount:12000,status:'cancelled',date:'05/07/2026'},{id:'ZAP-0134',name:'ليلى صالحي',phone:'0778765432',wilaya:'قسنطينة',product:'القفطان الأسود المطرز',amount:22000,status:'shipped',date:'05/07/2026'},{id:'ZAP-0133',name:'رانية بوضياف',phone:'0551234098',wilaya:'البليدة',product:'كراكو التراث الجزائري',amount:9800,status:'delivered',date:'04/07/2026'},{id:'ZAP-0132',name:'وردة عمراوي',phone:'0669012345',wilaya:'المدية',product:'القفطان الملكي الذهبي',amount:18500,status:'delivered',date:'03/07/2026'},{id:'ZAP-0131',name:'خديجة سعودي',phone:'0775678901',wilaya:'الجزائر',product:'فستان الزفاف الأبيض',amount:35000,status:'delivered',date:'02/07/2026'}];
-const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:38,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:27,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:19,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:15,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:12,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:9,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:5,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:3,stock:'out',stockLabel:'نفد المخزون'}];
-const CUSTOMERS=[{name:'فاطمة بوعلام',phone:'0550123456',wilaya:'وهران',orders:7,spent:68500,last:'10/07/2026'},{name:'نور الهدى مولاي',phone:'0661234567',wilaya:'الجزائر',orders:5,spent:52000,last:'09/07/2026'},{name:'مريم عيسى',phone:'0770987654',wilaya:'قسنطينة',orders:5,spent:47300,last:'09/07/2026'},{name:'هناء بن عمر',phone:'0556789012',wilaya:'تيزي وزو',orders:4,spent:39800,last:'08/07/2026'},{name:'سلمى رمضان',phone:'0663456789',wilaya:'سطيف',orders:4,spent:38200,last:'07/07/2026'},{name:'إيمان كريم',phone:'0779876543',wilaya:'بجاية',orders:3,spent:27400,last:'07/07/2026'},{name:'زينب حمود',phone:'0554321098',wilaya:'تلمسان',orders:3,spent:26500,last:'06/07/2026'},{name:'أسماء بلقاسم',phone:'0665432109',wilaya:'عنابة',orders:2,spent:18000,last:'05/07/2026'},{name:'ليلى صالحي',phone:'0778765432',wilaya:'قسنطينة',orders:2,spent:17800,last:'05/07/2026'},{name:'رانية بوضياف',phone:'0551234098',wilaya:'البليدة',orders:2,spent:16000,last:'04/07/2026'}];
-const WILAYAS_DATA=[{name:'الجزائر العاصمة',pct:24},{name:'وهران',pct:16},{name:'قسنطينة',pct:13},{name:'سطيف',pct:9},{name:'تيزي وزو',pct:7},{name:'بجاية',pct:6},{name:'تلمسان',pct:5},{name:'عنابة',pct:4},{name:'البليدة',pct:4},{name:'المدية',pct:3}];
-const REVENUE=[{m:'يناير',v:148000},{m:'فبراير',v:192000},{m:'مارس',v:225000},{m:'أبريل',v:178000},{m:'مايو',v:264000},{m:'يونيو',v:242000},{m:'يوليو',v:287400}];
+const ORDERS=[];
+const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:0,stock:'out',stockLabel:'نفد المخزون'}];
+const CUSTOMERS=[];
+const WILAYAS_DATA=[];
+const REVENUE=[];
 const WILAYAS_LIST=['أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار','البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو','الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس','عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر','ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف','تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة','عين الدفلى','النعامة','عين تيموشنت','غرداية','غليزان','المغير','المنيعة','أولاد جلال','برج باجي مختار','بني عباس','تيميمون','تقرت','جانت','عين صالح','عين قزام'];
 
 window.addEventListener('DOMContentLoaded',()=>{
