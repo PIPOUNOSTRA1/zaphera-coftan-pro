@@ -23,11 +23,11 @@ html{scroll-behavior:smooth;}
 body{
   background:var(--noir);
   color:var(--ivory);
-  font-family:'Tajawal',sans-serif;
+  font-family:'Cairo',sans-serif;
   overflow-x:hidden;
   cursor:default;
 }
-h1,h2,h3,.disp{font-family:'Aref Ruqaa',serif;}
+h1,h2,h3,.disp{font-family:'Cairo',sans-serif;font-weight:700;}
 ::selection{background:var(--gold);color:var(--ivory);}
 
 /* ---------- Loading shimmer bar ---------- */
@@ -3023,10 +3023,13 @@ gsap.registerPlugin(ScrollTrigger);
   /* ─── Apply all scroll-driven changes ─── */
   function applyProgress(p){
 
-    /* 1 ── VIDEO SEEK — no gate, always try */
+    /* 1 ── VIDEO SEEK — only seek if time change is meaningful */
     const dur = video.duration;
     if(dur > 0){
-      try{ video.currentTime = p * dur; }catch(e){}
+      const targetTime = p * dur;
+      if(Math.abs(video.currentTime - targetTime) > 0.04) {
+        try{ video.currentTime = targetTime; }catch(e){}
+      }
     }
 
     /* 2 ── PROGRESS BAR */
@@ -4232,6 +4235,31 @@ function handleOrderSubmit(e) {
     <div class="invoice-row total"><span>${translations[currentLang].total}</span> <span>${formatPrice(finalTotal)}</span></div>
   `;
   
+  // Save order to localStorage so it reaches the Admin panel
+  const savedOrders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
+  let orderProducts = [];
+  cart.forEach(item => {
+    const p = productsData.find(pd => pd.id === item.id);
+    if (p) {
+      const nameText = currentLang === 'ar' ? p.name : p.name_fr;
+      orderProducts.push(`${nameText} (x${item.quantity})`);
+    }
+  });
+
+  const newOrder = {
+    id: orderId.replace('#', ''),
+    name: name,
+    phone: phone,
+    wilaya: selectedWilaya ? selectedWilaya.name : wilayaCode,
+    product: orderProducts.join(' + '),
+    amount: finalTotal,
+    status: 'pending',
+    date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  };
+  
+  savedOrders.unshift(newOrder);
+  localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
+
   // Clear cart
   cart = [];
   localStorage.setItem('zf_cart', JSON.stringify(cart));
@@ -5293,6 +5321,22 @@ function ppHandleOrderSubmit(e) {
       `;
     }
     
+    // Save order to localStorage so it reaches the Admin panel
+    const savedOrders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
+    const newOrder = {
+      id: orderId.replace('#', ''),
+      name: name,
+      phone: phone,
+      wilaya: wilayaName,
+      product: productName,
+      amount: total,
+      status: 'pending',
+      date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    };
+    
+    savedOrders.unshift(newOrder);
+    localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
+
     // Show success
     const successEl = document.getElementById('ppSuccess');
     if (successEl) successEl.classList.add('show');

@@ -239,10 +239,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val">0<span style="font-size:.9rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إجمالي الإيرادات — هذا الشهر</div><div class="kpi-change">لا توجد مبيعات حالياً</div></div>
-        <div class="kpi-card"><div class="kpi-icon gr">📦</div><div class="kpi-val">0</div><div class="kpi-label">إجمالي الطلبات</div><div class="kpi-change">لا توجد طلبات جديدة</div></div>
-        <div class="kpi-card"><div class="kpi-icon b">👥</div><div class="kpi-val">0</div><div class="kpi-label">عميلات جديدات</div><div class="kpi-change">لا توجد عميلات جدد</div></div>
-        <div class="kpi-card"><div class="kpi-icon o">⏳</div><div class="kpi-val">0</div><div class="kpi-label">طلبات معلّقة</div><div class="kpi-change">كل شيء مستقر</div></div>
+        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val" id="kpiRevenue">0<span style="font-size:.9rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إجمالي الإيرادات — هذا الشهر</div><div class="kpi-change">لا توجد مبيعات حالياً</div></div>
+        <div class="kpi-card"><div class="kpi-icon gr">📦</div><div class="kpi-val" id="kpiOrders">0</div><div class="kpi-label">إجمالي الطلبات</div><div class="kpi-change">لا توجد طلبات جديدة</div></div>
+        <div class="kpi-card"><div class="kpi-icon b">👥</div><div class="kpi-val" id="kpiCustomers">0</div><div class="kpi-label">عميلات جديدات</div><div class="kpi-change">لا توجد عميلات جدد</div></div>
+        <div class="kpi-card"><div class="kpi-icon o">⏳</div><div class="kpi-val" id="kpiPending">0</div><div class="kpi-label">طلبات معلّقة</div><div class="kpi-change">كل شيء مستقر</div></div>
       </div>
       <div class="dash-grid">
         <div class="card">
@@ -280,8 +280,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <!-- ORDERS -->
     <div class="page" id="page-orders">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <div><div style="font-size:1.15rem;font-weight:700;">📦 إدارة الطلبات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;">0 طلب إجمالاً — 0 معلّق</div></div>
-        <button class="btn btn-gold" onclick="document.getElementById('addOrderModal').classList.add('open')">+ إضافة طلب يدوي</button>
+        <div><div style="font-size:1.15rem;font-weight:700;">📦 إدارة الطلبات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;" id="ordersPageSub">0 طلب إجمالاً — 0 معلّق</div></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline" style="border-color:var(--red);color:var(--red);" onclick="clearAllOrders()">🗑️ مسح جميع الطلبيات</button>
+          <button class="btn btn-gold" onclick="document.getElementById('addOrderModal').classList.add('open')">+ إضافة طلب يدوي</button>
+        </div>
       </div>
       <div class="tab-bar">
         <button class="tab active" onclick="filterOrders('all',this)">الكل (0)</button>
@@ -368,23 +371,23 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="modal">
     <div class="modal-title">📦 إضافة طلب جديد</div>
     <div class="form-row">
-      <div class="form-group"><label>اسم العميلة</label><input type="text" placeholder="الاسم الكامل"></div>
-      <div class="form-group"><label>رقم الهاتف</label><input type="tel" placeholder="0XXX XXX XXX"></div>
+      <div class="form-group"><label>اسم العميلة</label><input type="text" placeholder="الاسم الكامل" id="mAddName"></div>
+      <div class="form-group"><label>رقم الهاتف</label><input type="tel" placeholder="0XXX XXX XXX" id="mAddPhone"></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label>الولاية</label><select id="wilayaSelect"></select></div>
-      <div class="form-group"><label>البلدية</label><input type="text" placeholder="البلدية"></div>
+      <div class="form-group"><label>البلدية</label><input type="text" placeholder="البلدية" id="mAddCommune"></div>
     </div>
-    <div class="form-group" style="margin-bottom:14px;"><label>العنوان الكامل</label><input type="text" placeholder="رقم البناية، الشارع، الحي..."></div>
+    <div class="form-group" style="margin-bottom:14px;"><label>العنوان الكامل</label><input type="text" placeholder="رقم البناية، الشارع، الحي..." id="mAddAddress"></div>
     <div class="form-row">
-      <div class="form-group"><label>المنتج</label><select><option>القفطان الملكي الذهبي</option><option>كراكو السهرة الفضي</option><option>فستان الزفاف الأبيض</option><option>القفطان الأسود المطرز</option><option>كراكو التراث الجزائري</option></select></div>
-      <div class="form-group"><label>المبلغ (دج)</label><input type="number" placeholder="0"></div>
+      <div class="form-group"><label>المنتج</label><select id="mAddProduct"><option>القفطان الملكي الذهبي</option><option>كراكو السهرة الفضي</option><option>فستان الزفاف الأبيض</option><option>القفطان الأسود المطرز</option><option>كراكو التراث الجزائري</option></select></div>
+      <div class="form-group"><label>المبلغ (دج)</label><input type="number" placeholder="0" id="mAddAmount"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>المقاس</label><select><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>مقاس خاص</option></select></div>
-      <div class="form-group"><label>حالة الطلب</label><select><option value="pending">⏳ معلّق</option><option value="confirmed">✅ مؤكّد</option><option value="shipped">🚚 في الشحن</option></select></div>
+      <div class="form-group"><label>المقاس</label><select id="mAddSize"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>مقاس خاص</option></select></div>
+      <div class="form-group"><label>حالة الطلب</label><select id="mAddStatus"><option value="pending">⏳ معلّق</option><option value="confirmed">✅ مؤكّد</option><option value="shipped">🚚 في الشحن</option></select></div>
     </div>
-    <div class="form-group" style="margin-bottom:14px;"><label>ملاحظات</label><textarea placeholder="أي تفاصيل إضافية..."></textarea></div>
+    <div class="form-group" style="margin-bottom:14px;"><label>ملاحظات</label><textarea placeholder="أي تفاصيل إضافية..." id="mAddNotes"></textarea></div>
     <div class="modal-footer">
       <button class="btn btn-gold" onclick="addOrder()">✅ حفظ الطلب</button>
       <button class="btn btn-outline" onclick="document.getElementById('addOrderModal').classList.remove('open')">إلغاء</button>
@@ -413,18 +416,20 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
-const ORDERS=[];
+let ORDERS=JSON.parse(localStorage.getItem('zf_orders') || '[]');
 const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:0,stock:'out',stockLabel:'نفد المخزون'}];
-const CUSTOMERS=[];
-const WILAYAS_DATA=[];
-const REVENUE=[];
+let CUSTOMERS=[];
+let WILAYAS_DATA=[];
+let REVENUE=[];
 const WILAYAS_LIST=['أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار','البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو','الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس','عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر','ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف','تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة','عين الدفلى','النعامة','عين تيموشنت','غرداية','غليزان','المغير','المنيعة','أولاد جلال','برج باجي مختار','بني عباس','تيميمون','تقرت','جانت','عين صالح','عين قزام'];
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('currentDate').textContent=new Date().toLocaleDateString('ar-DZ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const sel=document.getElementById('wilayaSelect');
-  WILAYAS_LIST.forEach(w=>{const o=document.createElement('option');o.textContent=w;sel.appendChild(o);});
-  renderOrders(ORDERS);renderProducts();renderCustomers();renderWilayas();renderChart('revenueChart');
+  if(sel) {
+    WILAYAS_LIST.forEach(w=>{const o=document.createElement('option');o.textContent=w;sel.appendChild(o);});
+  }
+  renderOrders(ORDERS);renderProducts();updateDashboardStats();
 });
 
 function showPage(id,el){
@@ -450,22 +455,161 @@ function changeStatus(id){
   const o=ORDERS.find(x=>x.id===id);if(!o)return;
   const s=['pending','confirmed','shipped','delivered','cancelled'];
   o.status=s[(s.indexOf(o.status)+1)%s.length];
+  localStorage.setItem('zf_orders', JSON.stringify(ORDERS));
   renderOrders(ORDERS);
+  updateDashboardStats();
 }
 
-function addOrder(){document.getElementById('addOrderModal').classList.remove('open');alert('✅ تم حفظ الطلب بنجاح!');}
+function clearAllOrders() {
+  if (confirm('⚠️ هل أنت متأكد من رغبتك في حذف جميع الطلبيات نهائياً؟')) {
+    ORDERS = [];
+    localStorage.removeItem('zf_orders');
+    renderOrders(ORDERS);
+    updateDashboardStats();
+    alert('✅ تم مسح جميع الطلبيات بنجاح!');
+  }
+}
+
+function addOrder(){
+  const name = document.getElementById('mAddName').value.trim();
+  const phone = document.getElementById('mAddPhone').value.trim();
+  const wilaya = document.getElementById('wilayaSelect').value;
+  const commune = document.getElementById('mAddCommune').value.trim();
+  const address = document.getElementById('mAddAddress').value.trim();
+  const product = document.getElementById('mAddProduct').value;
+  const amount = Number(document.getElementById('mAddAmount').value) || 0;
+  const status = document.getElementById('mAddStatus').value;
+  
+  if(!name || !phone || !wilaya) {
+    alert('⚠️ يرجى ملء الاسم الكامل، رقم الهاتف، واختيار الولاية');
+    return;
+  }
+  
+  const orderId = 'ZF-' + Math.floor(1000 + Math.random() * 9000);
+  const newOrder = {
+    id: orderId,
+    name,
+    phone,
+    wilaya,
+    product,
+    amount,
+    status,
+    date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  };
+  
+  ORDERS.unshift(newOrder);
+  localStorage.setItem('zf_orders', JSON.stringify(ORDERS));
+  
+  document.getElementById('addOrderModal').classList.remove('open');
+  // Reset fields
+  document.getElementById('mAddName').value = '';
+  document.getElementById('mAddPhone').value = '';
+  document.getElementById('mAddCommune').value = '';
+  document.getElementById('mAddAddress').value = '';
+  document.getElementById('mAddAmount').value = '';
+  
+  renderOrders(ORDERS);
+  updateDashboardStats();
+  alert('✅ تم إضافة وحفظ الطلب بنجاح!');
+}
+
+function updateDashboardStats() {
+  const activeOrders = ORDERS.filter(o => o.status !== 'cancelled');
+  const revenue = activeOrders.reduce((sum, o) => sum + Number(o.amount), 0);
+  const totalCount = ORDERS.length;
+  const pendingCount = ORDERS.filter(o => o.status === 'pending').length;
+  
+  const uniquePhones = new Set(ORDERS.map(o => o.phone));
+  const customerCount = uniquePhones.size;
+
+  const kpiRevenue = document.getElementById('kpiRevenue');
+  const kpiOrders = document.getElementById('kpiOrders');
+  const kpiCustomers = document.getElementById('kpiCustomers');
+  const kpiPending = document.getElementById('kpiPending');
+
+  if (kpiRevenue) kpiRevenue.innerHTML = `${revenue.toLocaleString()}<span style="font-size:.9rem;color:var(--gold);"> دج</span>`;
+  if (kpiOrders) kpiOrders.textContent = totalCount;
+  if (kpiCustomers) kpiCustomers.textContent = customerCount;
+  if (kpiPending) kpiPending.textContent = pendingCount;
+
+  const ordersPageSub = document.getElementById('ordersPageSub');
+  if (ordersPageSub) {
+    ordersPageSub.textContent = `${totalCount} طلب إجمالاً — ${pendingCount} معلّق`;
+  }
+
+  const tabAll = document.querySelector('.tab-bar button:nth-child(1)');
+  const tabPending = document.querySelector('.tab-bar button:nth-child(2)');
+  const tabConfirmed = document.querySelector('.tab-bar button:nth-child(3)');
+  const tabShipped = document.querySelector('.tab-bar button:nth-child(4)');
+  const tabDelivered = document.querySelector('.tab-bar button:nth-child(5)');
+  const tabCancelled = document.querySelector('.tab-bar button:nth-child(6)');
+
+  if (tabAll) tabAll.textContent = `الكل (${totalCount})`;
+  if (tabPending) tabPending.textContent = `⏳ معلّقة (${ORDERS.filter(o => o.status === 'pending').length})`;
+  if (tabConfirmed) tabConfirmed.textContent = `✅ مؤكّدة (${ORDERS.filter(o => o.status === 'confirmed').length})`;
+  if (tabShipped) tabShipped.textContent = `🚚 في الشحن (${ORDERS.filter(o => o.status === 'shipped').length})`;
+  if (tabDelivered) tabDelivered.textContent = `📬 مُسلَّمة (${ORDERS.filter(o => o.status === 'delivered').length})`;
+  if (tabCancelled) tabCancelled.textContent = `❌ ملغاة (${ORDERS.filter(o => o.status === 'cancelled').length})`;
+  
+  const sidebarBadge = document.querySelector('.nav-badge');
+  if (sidebarBadge) sidebarBadge.textContent = pendingCount;
+  
+  const customersMap = {};
+  ORDERS.forEach(o => {
+    if (!customersMap[o.phone]) {
+      customersMap[o.phone] = {
+        name: o.name,
+        phone: o.phone,
+        wilaya: o.wilaya,
+        orders: 0,
+        spent: 0,
+        last: o.date
+      };
+    }
+    const c = customersMap[o.phone];
+    c.orders += 1;
+    if (o.status !== 'cancelled') c.spent += Number(o.amount);
+    c.last = o.date;
+  });
+
+  const CUSTOMERS_LIST = Object.values(customersMap);
+  const customersBody = document.getElementById('customersBody');
+  if (customersBody) {
+    customersBody.innerHTML = CUSTOMERS_LIST.map((c, i) => `
+      <tr>
+        <td style="color:var(--text2);">${i+1}</td>
+        <td><strong>${c.name}</strong></td>
+        <td style="direction:ltr;text-align:right;font-size:.82rem;">${c.phone}</td>
+        <td><span class="wilaya-chip">${c.wilaya}</span></td>
+        <td style="text-align:center;font-weight:700;color:var(--gold);">${c.orders}</td>
+        <td><strong>${c.spent.toLocaleString()} دج</strong></td>
+        <td style="font-size:.75rem;color:var(--text2);">${c.last}</td>
+      </tr>
+    `).join('');
+  }
+
+  const sortedCustomers = [...CUSTOMERS_LIST].sort((a,b) => b.spent - a.spent).slice(0, 4);
+  const bestCustomersCard = document.querySelector('.dash-grid-3 .card:nth-child(1)');
+  if (bestCustomersCard) {
+    bestCustomersCard.innerHTML = `
+      <div class="card-head"><div class="card-title">👑 أفضل العميلات</div></div>
+      ${sortedCustomers.length === 0 ? '<div style="text-align:center;padding:40px 0;color:var(--text2);font-size:.85rem;">لا توجد عميلات حالياً</div>' : sortedCustomers.map(c => `
+        <div class="client-row">
+          <div class="client-av">${c.name.charAt(0)}</div>
+          <div>
+            <div class="client-name">${c.name}</div>
+            <div class="client-orders">${c.orders} طلبات — ${c.wilaya}</div>
+          </div>
+          <div class="client-spent">${c.spent.toLocaleString()} دج</div>
+        </div>
+      `).join('')}
+    `;
+  }
+}
 
 function renderProducts(){document.getElementById('productsGrid').innerHTML=PRODUCTS.map(p=>`<div class="prod-card"><div class="prod-img">${p.emoji}</div><div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-price">${p.price.toLocaleString()} دج</div><div class="prod-sold">تم بيع ${p.sold} وحدة</div><span class="prod-stock ${p.stock}">${p.stockLabel}</span></div></div>`).join('');}
-
-function renderCustomers(){document.getElementById('customersBody').innerHTML=CUSTOMERS.map((c,i)=>`<tr><td style="color:var(--text2);">${i+1}</td><td><strong>${c.name}</strong></td><td style="direction:ltr;text-align:right;font-size:.82rem;">${c.phone}</td><td><span class="wilaya-chip">${c.wilaya}</span></td><td style="text-align:center;font-weight:700;color:var(--gold);">${c.orders}</td><td><strong>${c.spent.toLocaleString()} دج</strong></td><td style="font-size:.75rem;color:var(--text2);">${c.last}</td></tr>`).join('');}
-
-function renderWilayas(){document.getElementById('wilayaList').innerHTML=WILAYAS_DATA.map(w=>`<div class="wilaya-row"><div class="wilaya-name">${w.name}</div><div class="wilaya-bar-bg"><div class="wilaya-bar-fill" style="width:${w.pct}%"></div></div><div class="wilaya-pct">${w.pct}%</div></div>`).join('');}
-
-function renderChart(id){
-  const el=document.getElementById(id);if(!el)return;
-  const max=Math.max(...REVENUE.map(r=>r.v));
-  el.innerHTML=REVENUE.map(r=>`<div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.round((r.v/max)*100)}%"><div class="chart-bar-tooltip">${r.v.toLocaleString()} دج</div></div></div><div class="chart-lbl">${r.m}</div></div>`).join('');
-}
+function renderWilayas(){}
+function renderChart(id){}
 </script>
 </body>
 </html>
