@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>زاڤيرا — لوحة التحكم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">ز</div>
+    <div class="sidebar-logo-text">زاڤيرا<span>ADMIN PANEL</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">الرئيسية</div>
+    <a class="nav-item active" onclick="showPage('dashboard',this)"><span class="ni">📊</span> لوحة التحكم</a>
+    <div class="nav-section">المتجر</div>
+    <a class="nav-item" onclick="showPage('orders',this)"><span class="ni">📦</span> الطلبات<span class="nav-badge">0</span></a>
+    <a class="nav-item" onclick="showPage('products',this)"><span class="ni">👘</span> المنتجات</a>
+    <a class="nav-item" onclick="showPage('customers',this)"><span class="ni">👥</span> العميلات</a>
+    <div class="nav-section">التحليلات</div>
+    <a class="nav-item" onclick="showPage('analytics',this)"><span class="ni">📈</span> الإحصاءات</a>
+    <a class="nav-item" onclick="showPage('wilayas',this)"><span class="ni">🗺️</span> الولايات</a>
+    <div class="nav-section">الإعدادات</div>
+    <a class="nav-item" onclick="showPage('settings',this)"><span class="ni">⚙️</span> الإعدادات</a>
+    <a class="nav-item" href="index.html" target="_blank"><span class="ni">🌐</span> المتجر المباشر</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-avatar">م</div>
+    <div class="user-info">
+      <div class="user-name">المدير العام</div>
+      <div class="user-role">✦ Super Admin</div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title"><span>زاڤيرا</span> — لوحة التحكم</div>
+    <div class="topbar-search"><span>🔍</span><input type="text" placeholder="ابحث عن طلب أو عميلة..."></div>
+    <div class="topbar-btn">🔔<div class="notif-dot"></div></div>
+    <div class="topbar-btn">📋</div>
+    <div class="date-badge" id="currentDate"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val" id="kpiRevenue">0<span style="font-size:.9rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إجمالي الإيرادات — هذا الشهر</div><div class="kpi-change">لا توجد مبيعات حالياً</div></div>
+        <div class="kpi-card"><div class="kpi-icon gr">📦</div><div class="kpi-val" id="kpiOrders">0</div><div class="kpi-label">إجمالي الطلبات</div><div class="kpi-change">لا توجد طلبات جديدة</div></div>
+        <div class="kpi-card"><div class="kpi-icon b">👥</div><div class="kpi-val" id="kpiCustomers">0</div><div class="kpi-label">عميلات جديدات</div><div class="kpi-change">لا توجد عميلات جدد</div></div>
+        <div class="kpi-card"><div class="kpi-icon o">⏳</div><div class="kpi-val" id="kpiPending">0</div><div class="kpi-label">طلبات معلّقة</div><div class="kpi-change">كل شيء مستقر</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head"><div class="card-title">📈 الإيرادات — آخر 7 أشهر (دج)</div></div>
+          <div class="chart-bars" id="revenueChart" style="display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.85rem;">لا توجد بيانات مبيعات لعرض المخطط</div>
+          <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--text2);">الإيرادات الشهرية بالدينار الجزائري</div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">🔔 آخر النشاطات</div></div>
+          <div class="activity-list" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;color:var(--text2);font-size:.85rem;">
+            لا توجد نشاطات حالياً
+          </div>
+        </div>
+      </div>
+      <div class="dash-grid-3">
+        <div class="card">
+          <div class="card-head"><div class="card-title">👑 أفضل العميلات</div></div>
+          <div style="text-align:center;padding:40px 0;color:var(--text2);font-size:.85rem;">لا توجد عميلات حالياً</div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">🏆 أكثر المنتجات مبيعاً</div></div>
+          <div style="text-align:center;padding:40px 0;color:var(--text2);font-size:.85rem;">لا توجد مبيعات حالياً</div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">📊 ملخص حالات الطلبات</div></div>
+          <div class="stat-row"><span class="stat-key">⏳ معلّقة</span><span class="badge pending">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">✅ مؤكّدة</span><span class="badge confirmed">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">🚚 في الشحن</span><span class="badge shipped">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">📬 تم التسليم</span><span class="badge delivered">0 طلب</span></div>
+          <div class="stat-row"><span class="stat-key">❌ ملغاة</span><span class="badge cancelled">0 طلب</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="page" id="page-orders">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div><div style="font-size:1.15rem;font-weight:700;">📦 إدارة الطلبات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;" id="ordersPageSub">0 طلب إجمالاً — 0 معلّق</div></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline" style="border-color:var(--red);color:var(--red);" onclick="clearAllOrders()">🗑️ مسح جميع الطلبيات</button>
+          <button class="btn btn-gold" onclick="document.getElementById('addOrderModal').classList.add('open')">+ إضافة طلب يدوي</button>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab active" onclick="filterOrders('all',this)">الكل (0)</button>
+        <button class="tab" onclick="filterOrders('pending',this)">⏳ معلّقة (0)</button>
+        <button class="tab" onclick="filterOrders('confirmed',this)">✅ مؤكّدة (0)</button>
+        <button class="tab" onclick="filterOrders('shipped',this)">🚚 في الشحن (0)</button>
+        <button class="tab" onclick="filterOrders('delivered',this)">📬 مُسلَّمة (0)</button>
+        <button class="tab" onclick="filterOrders('cancelled',this)">❌ ملغاة (0)</button>
+      </div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميلة</th><th>الهاتف</th><th>الولاية</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>التاريخ</th><th>إجراء</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="page" id="page-products">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div><div style="font-size:1.15rem;font-weight:700;">👘 إدارة المنتجات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;">8 منتجات نشطة</div></div>
+        <button class="btn btn-gold" onclick="document.getElementById('addProductModal').classList.add('open')">+ إضافة منتج</button>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="page" id="page-customers">
+      <div style="font-size:1.15rem;font-weight:700;margin-bottom:20px;">👥 قائمة العميلات</div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>الاسم</th><th>الهاتف</th><th>الولاية</th><th>عدد الطلبات</th><th>إجمالي الإنفاق</th><th>آخر طلب</th></tr></thead><tbody id="customersBody"></tbody></table></div></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div style="font-size:1.15rem;font-weight:700;margin-bottom:20px;">📈 تحليلات المبيعات</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-icon g">💰</div><div class="kpi-val">0<span style="font-size:.8rem;color:var(--gold);"> دج</span></div><div class="kpi-label">إيرادات هذا الشهر</div><div class="kpi-change">لا توجد بيانات</div></div>
+        <div class="kpi-card"><div class="kpi-icon gr">🛍️</div><div class="kpi-val">0<span style="font-size:.8rem;color:var(--gold);"> دج</span></div><div class="kpi-label">متوسط قيمة الطلب</div><div class="kpi-change">لا توجد بيانات</div></div>
+        <div class="kpi-card"><div class="kpi-icon b">🔄</div><div class="kpi-val">0%</div><div class="kpi-label">معدل العميلات العائدات</div><div class="kpi-change">لا توجد بيانات</div></div>
+        <div class="kpi-card"><div class="kpi-icon o">⭐</div><div class="kpi-val">5.0</div><div class="kpi-label">متوسط تقييم العميلات</div><div class="kpi-change">ممتاز</div></div>
+      </div>
+      <div class="card"><div class="card-head"><div class="card-title">📊 الإيرادات الشهرية — 2026</div></div><div class="chart-bars" id="analyticsChart" style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.85rem;">لا توجد بيانات مبيعات لعرض المخطط</div></div>
+    </div>
+
+    <!-- WILAYAS -->
+    <div class="page" id="page-wilayas">
+      <div style="font-size:1.15rem;font-weight:700;margin-bottom:20px;">🗺️ الطلبات حسب الولاية</div>
+      <div class="dash-grid">
+        <div class="card"><div class="card-head"><div class="card-title">أعلى 10 ولايات مبيعاً</div></div><div class="wilaya-list" id="wilayaList"></div></div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">🏆 ملخص الولايات</div></div>
+          <div class="stat-row"><span class="stat-key">إجمالي الولايات الموصَّل إليها</span><span class="stat-val">0 ولاية</span></div>
+          <div class="stat-row"><span class="stat-key">الولاية الأعلى مبيعاً</span><span class="stat-val" style="color:var(--gold);">لا توجد</span></div>
+          <div class="stat-row"><span class="stat-key">أسرع ولاية تسليماً</span><span class="stat-val">لا توجد</span></div>
+          <div class="stat-row"><span class="stat-key">طلبات من الشرق</span><span class="stat-val">0%</span></div>
+          <div class="stat-row"><span class="stat-key">طلبات من الغرب</span><span class="stat-val">0%</span></div>
+          <div class="stat-row"><span class="stat-key">طلبات من الجنوب</span><span class="stat-val">0%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div style="font-size:1.15rem;font-weight:700;margin-bottom:20px;">⚙️ إعدادات المتجر</div>
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head"><div class="card-title">معلومات المتجر</div></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>اسم المتجر</label><input type="text" value="زاڤيرا كوفتان"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>رقم الواتساب</label><input type="text" value="+213 XXX XXX XXX"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني</label><input type="email" value="contact@zaphera.dz"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>وصف المتجر</label><textarea>دار أزياء جزائرية فاخرة — قفطان، كراكو، فساتين سهرة وزفاف بلمسة جزائرية أصيلة.</textarea></div>
+          <button class="btn btn-gold">حفظ التغييرات</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">إعدادات الشحن والتسليم</div></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>تكلفة الشحن الافتراضية (دج)</label><input type="number" value="400"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>وقت التسليم المتوقع</label><select><option>3 - 5 أيام عمل</option><option>5 - 7 أيام عمل</option><option>1 - 2 أيام عمل</option></select></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>شركة الشحن المفضلة</label><select><option>Yalidine</option><option>Zr Express</option><option>Guepex</option><option>Amana</option></select></div>
+          <button class="btn btn-gold">حفظ إعدادات الشحن</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD ORDER MODAL -->
+<div class="overlay" id="addOrderModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-title">📦 إضافة طلب جديد</div>
+    <div class="form-row">
+      <div class="form-group"><label>اسم العميلة</label><input type="text" placeholder="الاسم الكامل" id="mAddName"></div>
+      <div class="form-group"><label>رقم الهاتف</label><input type="tel" placeholder="0XXX XXX XXX" id="mAddPhone"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>الولاية</label><select id="wilayaSelect"></select></div>
+      <div class="form-group"><label>البلدية</label><input type="text" placeholder="البلدية" id="mAddCommune"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px;"><label>العنوان الكامل</label><input type="text" placeholder="رقم البناية، الشارع، الحي..." id="mAddAddress"></div>
+    <div class="form-row">
+      <div class="form-group"><label>المنتج</label><select id="mAddProduct"><option>القفطان الملكي الذهبي</option><option>كراكو السهرة الفضي</option><option>فستان الزفاف الأبيض</option><option>القفطان الأسود المطرز</option><option>كراكو التراث الجزائري</option></select></div>
+      <div class="form-group"><label>المبلغ (دج)</label><input type="number" placeholder="0" id="mAddAmount"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>المقاس</label><select id="mAddSize"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>مقاس خاص</option></select></div>
+      <div class="form-group"><label>حالة الطلب</label><select id="mAddStatus"><option value="pending">⏳ معلّق</option><option value="confirmed">✅ مؤكّد</option><option value="shipped">🚚 في الشحن</option></select></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px;"><label>ملاحظات</label><textarea placeholder="أي تفاصيل إضافية..." id="mAddNotes"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-gold" onclick="addOrder()">✅ حفظ الطلب</button>
+      <button class="btn btn-outline" onclick="document.getElementById('addOrderModal').classList.remove('open')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="overlay" id="addProductModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-title">👘 إضافة منتج جديد</div>
+    <div class="form-row">
+      <div class="form-group"><label>اسم المنتج</label><input type="text" placeholder="مثال: القفطان الملكي"></div>
+      <div class="form-group"><label>الفئة</label><select><option>قفطان</option><option>كراكو</option><option>فساتين سهرة</option><option>فساتين زفاف</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>السعر (دج)</label><input type="number" placeholder="0"></div>
+      <div class="form-group"><label>المخزون</label><input type="number" placeholder="0"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px;"><label>الوصف</label><textarea placeholder="وصف المنتج..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-gold" onclick="document.getElementById('addProductModal').classList.remove('open')">✅ حفظ المنتج</button>
+      <button class="btn btn-outline" onclick="document.getElementById('addProductModal').classList.remove('open')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: zaphera-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+  # Frontend Static Site
+  - type: static
+    name: zaphera-frontend
+    env: static
+    plan: free
+    region: oregon
+    publishPath: site_pro
+    buildCommand: ""

@@ -2341,9 +2341,8 @@ html[dir="ltr"] .live-alert-popup {
       <button class="drawer-close" id="cartCloseBtn">&times;</button>
     </div>
     <div class="drawer-body">
-      <div class="cart-items" id="cartItemsList">
-        <div class="cart-empty" id="cartEmptyMsg">سلتك فارغة حالياً. تصفحي المجموعة وأضيفي ما يعجبك.</div>
-      </div>
+      <div class="cart-empty" id="cartEmptyMsg">سلتك فارغة حالياً. تصفحي المجموعة وأضيفي ما يعجبك.</div>
+      <div class="cart-items" id="cartItemsList"></div>
       
       <!-- Checkout Form -->
       <div class="checkout-section" id="checkoutSection" style="display:none; margin-top: 30px;">
@@ -2408,9 +2407,8 @@ html[dir="ltr"] .live-alert-popup {
       <button class="drawer-close" id="wishlistCloseBtn">&times;</button>
     </div>
     <div class="drawer-body">
-      <div class="wishlist-items" id="wishlistItemsList">
-        <div class="wishlist-empty" id="wishlistEmptyMsg">قائمة المفضلة فارغة حالياً.</div>
-      </div>
+      <div class="wishlist-empty" id="wishlistEmptyMsg">قائمة المفضلة فارغة حالياً.</div>
+      <div class="wishlist-items" id="wishlistItemsList"></div>
     </div>
   </div>
 </div>
@@ -3994,13 +3992,13 @@ function renderCart() {
   listContainer.innerHTML = '';
   
   if (cart.length === 0) {
-    emptyMsg.style.display = 'block';
+    if (emptyMsg) emptyMsg.style.display = 'block';
     if (footer) footer.style.display = 'none';
     if (checkoutSec) checkoutSec.style.display = 'none';
     return;
   }
   
-  emptyMsg.style.display = 'none';
+  if (emptyMsg) emptyMsg.style.display = 'none';
   if (footer) footer.style.display = 'block';
   if (checkoutSec) checkoutSec.style.display = 'block';
   
@@ -4235,17 +4233,6 @@ function handleOrderSubmit(e) {
     <div class="invoice-row total"><span>${translations[currentLang].total}</span> <span>${formatPrice(finalTotal)}</span></div>
   `;
   
-  // Save order to localStorage so it reaches the Admin panel
-  const savedOrders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
-  let orderProducts = [];
-  cart.forEach(item => {
-    const p = productsData.find(pd => pd.id === item.id);
-    if (p) {
-      const nameText = currentLang === 'ar' ? p.name : p.name_fr;
-      orderProducts.push(`${nameText} (x${item.quantity})`);
-    }
-  });
-
   const newOrder = {
     id: orderId.replace('#', ''),
     name: name,
@@ -4257,8 +4244,26 @@ function handleOrderSubmit(e) {
     date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
   };
   
-  savedOrders.unshift(newOrder);
-  localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
+  // Save order to server with localStorage fallback
+  (async function() {
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(newOrder)
+      });
+      if (response.ok) {
+        console.log('Order persisted on server');
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend server unreachable, falling back to local storage', err);
+    }
+    // Fallback to localStorage
+    const savedOrders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
+    savedOrders.unshift(newOrder);
+    localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
+  })();
 
   // Clear cart
   cart = [];
@@ -5321,8 +5326,6 @@ function ppHandleOrderSubmit(e) {
       `;
     }
     
-    // Save order to localStorage so it reaches the Admin panel
-    const savedOrders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
     const newOrder = {
       id: orderId.replace('#', ''),
       name: name,
@@ -5334,8 +5337,26 @@ function ppHandleOrderSubmit(e) {
       date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
     };
     
-    savedOrders.unshift(newOrder);
-    localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
+    // Save order to server with localStorage fallback
+    (async function() {
+      try {
+        const response = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          body: JSON.stringify(newOrder)
+        });
+        if (response.ok) {
+          console.log('Order persisted on server');
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend server unreachable, falling back to local storage', err);
+      }
+      // Fallback to localStorage
+      const savedOrders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
+      savedOrders.unshift(newOrder);
+      localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
+    })();
 
     // Show success
     const successEl = document.getElementById('ppSuccess');

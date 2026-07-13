@@ -416,20 +416,36 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
-let ORDERS=JSON.parse(localStorage.getItem('zf_orders') || '[]');
+let ORDERS=[];
 const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:0,stock:'out',stockLabel:'نفد المخزون'}];
 let CUSTOMERS=[];
 let WILAYAS_DATA=[];
 let REVENUE=[];
 const WILAYAS_LIST=['أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار','البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو','الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس','عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر','ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف','تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة','عين الدفلى','النعامة','عين تيموشنت','غرداية','غليزان','المغير','المنيعة','أولاد جلال','برج باجي مختار','بني عباس','تيميمون','تقرت','جانت','عين صالح','عين قزام'];
 
-window.addEventListener('DOMContentLoaded',()=>{
+async function loadOrders() {
+  try {
+    const res = await fetch('/api/orders');
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Backend server unreachable, falling back to local storage', err);
+  }
+  return JSON.parse(localStorage.getItem('zf_orders') || '[]');
+}
+
+window.addEventListener('DOMContentLoaded',async ()=>{
   document.getElementById('currentDate').textContent=new Date().toLocaleDateString('ar-DZ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const sel=document.getElementById('wilayaSelect');
   if(sel) {
     WILAYAS_LIST.forEach(w=>{const o=document.createElement('option');o.textContent=w;sel.appendChild(o);});
   }
-  renderOrders(ORDERS);renderProducts();updateDashboardStats();
+  
+  ORDERS = await loadOrders();
+  renderOrders(ORDERS);
+  renderProducts();
+  updateDashboardStats();
 });
 
 function showPage(id,el){
@@ -451,26 +467,55 @@ function filterOrders(status,btn){
   renderOrders(status==='all'?ORDERS:ORDERS.filter(o=>o.status===status));
 }
 
-function changeStatus(id){
+async function changeStatus(id){
   const o=ORDERS.find(x=>x.id===id);if(!o)return;
   const s=['pending','confirmed','shipped','delivered','cancelled'];
-  o.status=s[(s.indexOf(o.status)+1)%s.length];
-  localStorage.setItem('zf_orders', JSON.stringify(ORDERS));
+  const newStatus = s[(s.indexOf(o.status)+1)%s.length];
+  o.status = newStatus;
+  
+  try {
+    const res = await fetch('/api/orders/update-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ id, status: newStatus })
+    });
+    if (res.ok) {
+      console.log('Order status updated on server');
+    } else {
+      throw new Error('Server update failed');
+    }
+  } catch (err) {
+    console.warn('Backend server unreachable, falling back to local storage', err);
+    localStorage.setItem('zf_orders', JSON.stringify(ORDERS));
+  }
+  
   renderOrders(ORDERS);
   updateDashboardStats();
 }
 
-function clearAllOrders() {
+async function clearAllOrders() {
   if (confirm('⚠️ هل أنت متأكد من رغبتك في حذف جميع الطلبيات نهائياً؟')) {
     ORDERS = [];
-    localStorage.removeItem('zf_orders');
+    
+    try {
+      const res = await fetch('/api/orders/clear', { method: 'POST' });
+      if (res.ok) {
+        console.log('Orders cleared on server');
+      } else {
+        throw new Error('Server clear failed');
+      }
+    } catch (err) {
+      console.warn('Backend server unreachable, falling back to local storage', err);
+      localStorage.removeItem('zf_orders');
+    }
+    
     renderOrders(ORDERS);
     updateDashboardStats();
     alert('✅ تم مسح جميع الطلبيات بنجاح!');
   }
 }
 
-function addOrder(){
+async function addOrder(){
   const name = document.getElementById('mAddName').value.trim();
   const phone = document.getElementById('mAddPhone').value.trim();
   const wilaya = document.getElementById('wilayaSelect').value;
@@ -498,7 +543,22 @@ function addOrder(){
   };
   
   ORDERS.unshift(newOrder);
-  localStorage.setItem('zf_orders', JSON.stringify(ORDERS));
+  
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(newOrder)
+    });
+    if (res.ok) {
+      console.log('Manual order saved to server');
+    } else {
+      throw new Error('Server save failed');
+    }
+  } catch (err) {
+    console.warn('Backend server unreachable, falling back to local storage', err);
+    localStorage.setItem('zf_orders', JSON.stringify(ORDERS));
+  }
   
   document.getElementById('addOrderModal').classList.remove('open');
   // Reset fields
