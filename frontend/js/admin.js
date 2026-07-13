@@ -1,5 +1,5 @@
 
-const BACKEND_URL = 'https://zaphera-coftan-pro.onrender.com';
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://zaphera-coftan-pro.onrender.com';
 let ORDERS=[];
 const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:0,stock:'out',stockLabel:'نفد المخزون'}];
 let CUSTOMERS=[];
