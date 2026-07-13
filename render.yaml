@@ -11,6 +11,30 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: CORS_ORIGIN
+        value: "*"
+      # Google Sheets Configurations (Render will prompt you for these values)
+      - key: GOOGLE_SERVICE_ACCOUNT_EMAIL
+        sync: false
+      - key: GOOGLE_PRIVATE_KEY
+        sync: false
+      - key: GOOGLE_SPREADSHEET_ID
+        sync: false
+      # Meta Configurations
+      - key: META_PIXEL_ID
+        sync: false
+      - key: META_ACCESS_TOKEN
+        sync: false
+      # TikTok Configurations
+      - key: TIKTOK_PIXEL_ID
+        sync: false
+      - key: TIKTOK_ACCESS_TOKEN
+        sync: false
+      # Snapchat Configurations
+      - key: SNAP_PIXEL_ID
+        sync: false
+      - key: SNAP_ACCESS_TOKEN
+        sync: false
 
   # Frontend Static Site
   - type: static
