@@ -1,4 +1,5 @@
 
+const BACKEND_URL = 'https://zaphera-coftan-pro.onrender.com';
 let ORDERS=[];
 const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:0,stock:'out',stockLabel:'نفد المخزون'}];
 let CUSTOMERS=[];
@@ -8,7 +9,7 @@ const WILAYAS_LIST=['أدرار','الشلف','الأغواط','أم البوا�
 
 async function loadOrders() {
   try {
-    const res = await fetch('/api/orders');
+    const res = await fetch(BACKEND_URL + '/api/orders');
     if (res.ok) {
       const data = await res.json();
       return Array.isArray(data) ? data : (data.orders || []);
@@ -58,7 +59,7 @@ async function changeStatus(id){
   o.status = newStatus;
   
   try {
-    const res = await fetch('/api/orders/update-status', {
+    const res = await fetch(BACKEND_URL + '/api/orders/update-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ id, status: newStatus })
@@ -82,7 +83,7 @@ async function clearAllOrders() {
     ORDERS = [];
     
     try {
-      const res = await fetch('/api/orders/clear', { method: 'POST' });
+      const res = await fetch(BACKEND_URL + '/api/orders/clear', { method: 'POST' });
       if (res.ok) {
         console.log('Orders cleared on server');
       } else {
@@ -129,7 +130,7 @@ async function addOrder(){
   ORDERS.unshift(newOrder);
   
   try {
-    const res = await fetch('/api/orders', {
+    const res = await fetch(BACKEND_URL + '/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(newOrder)

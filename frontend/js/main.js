@@ -1381,7 +1381,7 @@ function handleOrderSubmit(e) {
   // Save order to server with localStorage fallback
   (async function() {
     try {
-      const response = await fetch('/api/orders', {
+      const response = await fetch('https://zaphera-coftan-pro.onrender.com/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8' },
         body: JSON.stringify(newOrder)
@@ -2474,7 +2474,7 @@ function ppHandleOrderSubmit(e) {
     // Save order to server with localStorage fallback
     (async function() {
       try {
-        const response = await fetch('/api/orders', {
+        const response = await fetch('https://zaphera-coftan-pro.onrender.com/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json; charset=utf-8' },
           body: JSON.stringify(newOrder)
