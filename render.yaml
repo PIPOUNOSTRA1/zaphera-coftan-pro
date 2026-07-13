@@ -39,7 +39,7 @@ services:
   # Frontend Static Site
   - type: web
     name: zaphera-frontend
-    env: static
+    runtime: static
     plan: free
     region: oregon
     staticPublishPath: site_pro
