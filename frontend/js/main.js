@@ -1381,7 +1381,7 @@ function handleOrderSubmit(e) {
   // Save order to server with localStorage fallback
   (async function() {
     try {
-      const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://zaphera-coftan-pro.onrender.com';
+      const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' ? 'https://zaphera-coftan-pro-1-m.onrender.com' : '';
       const response = await fetch(BACKEND_URL + '/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -2475,7 +2475,7 @@ function ppHandleOrderSubmit(e) {
     // Save order to server with localStorage fallback
     (async function() {
       try {
-        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://zaphera-coftan-pro.onrender.com';
+        const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' ? 'https://zaphera-coftan-pro-1-m.onrender.com' : '';
         const response = await fetch(BACKEND_URL + '/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json; charset=utf-8' },
