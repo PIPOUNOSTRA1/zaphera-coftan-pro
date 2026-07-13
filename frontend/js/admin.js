@@ -10,7 +10,8 @@ async function loadOrders() {
   try {
     const res = await fetch('/api/orders');
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      return Array.isArray(data) ? data : (data.orders || []);
     }
   } catch (err) {
     console.warn('Backend server unreachable, falling back to local storage', err);
