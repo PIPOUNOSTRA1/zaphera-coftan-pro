@@ -37,10 +37,10 @@ services:
         sync: false
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: zaphera-frontend
     env: static
     plan: free
     region: oregon
-    publishPath: site_pro
+    staticPublishPath: site_pro
     buildCommand: ""
