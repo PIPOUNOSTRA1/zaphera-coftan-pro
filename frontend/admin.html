@@ -161,18 +161,44 @@
       <div class="dash-grid">
         <div class="card">
           <div class="card-head"><div class="card-title">معلومات المتجر</div></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>اسم المتجر</label><input type="text" value="زاڤيرا كوفتان"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>رقم الواتساب</label><input type="text" value="+213 XXX XXX XXX"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني</label><input type="email" value="contact@zaphera.dz"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>وصف المتجر</label><textarea>دار أزياء جزائرية فاخرة — قفطان، كراكو، فساتين سهرة وزفاف بلمسة جزائرية أصيلة.</textarea></div>
-          <button class="btn btn-gold">حفظ التغييرات</button>
+          <div class="form-group" style="margin-bottom:14px;"><label>اسم المتجر</label><input type="text" id="cfgStoreName" value="زاڤيرا كوفتان"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>رقم الواتساب</label><input type="text" id="cfgWhatsappNumber" value="+213 XXX XXX XXX"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني</label><input type="email" id="cfgStoreEmail" value="contact@zaphera.dz"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>وصف المتجر</label><textarea id="cfgStoreDesc">دار أزياء جزائرية فاخرة — قفطان، كراكو، فساتين سهرة وزفاف بلمسة جزائرية أصيلة.</textarea></div>
+          <button class="btn btn-gold" onclick="saveStoreSettings()">حفظ التغييرات</button>
         </div>
         <div class="card">
           <div class="card-head"><div class="card-title">إعدادات الشحن والتسليم</div></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>تكلفة الشحن الافتراضية (دج)</label><input type="number" value="400"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>وقت التسليم المتوقع</label><select><option>3 - 5 أيام عمل</option><option>5 - 7 أيام عمل</option><option>1 - 2 أيام عمل</option></select></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>شركة الشحن المفضلة</label><select><option>Yalidine</option><option>Zr Express</option><option>Guepex</option><option>Amana</option></select></div>
-          <button class="btn btn-gold">حفظ إعدادات الشحن</button>
+          <div class="form-group" style="margin-bottom:14px;"><label>تكلفة الشحن الافتراضية (دج)</label><input type="number" id="cfgShippingCost" value="400"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>وقت التسليم المتوقع</label><select id="cfgDeliveryTime"><option>3 - 5 أيام عمل</option><option>5 - 7 أيام عمل</option><option>1 - 2 أيام عمل</option></select></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>شركة الشحن المفضلة</label><select id="cfgShippingCompany"><option>Yalidine</option><option>Zr Express</option><option>Guepex</option><option>Amana</option></select></div>
+          <button class="btn btn-gold" onclick="saveShippingSettings()">حفظ إعدادات الشحن</button>
+        </div>
+      </div>
+      
+      <div class="dash-grid" style="margin-top:20px;">
+        <div class="card">
+          <div class="card-head"><div class="card-title">🔌 إعدادات Google Sheets</div></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني للحساب الخدمي (Service Account Email)</label><input type="email" id="cfgGoogleEmail" placeholder="example@project.iam.gserviceaccount.com"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>المفتاح الخاص (Private Key)</label><textarea id="cfgGooglePrivateKey" style="min-height:120px;" placeholder="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"></textarea></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>معرف جدول البيانات (Spreadsheet ID)</label><input type="text" id="cfgGoogleSpreadsheetId" placeholder="spreadsheetIdKeyHere"></div>
+          <button class="btn btn-gold" onclick="saveGoogleSettings()">حفظ إعدادات Google Sheets</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">🎯 إعدادات البيكسل والـ API (Meta, TikTok, Snapchat)</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:14px;"><label>Meta Pixel ID</label><input type="text" id="cfgMetaPixelId" placeholder="Meta Pixel ID"></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Meta Access Token</label><input type="text" id="cfgMetaAccessToken" placeholder="Meta Access Token"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:14px;"><label>TikTok Pixel ID</label><input type="text" id="cfgTiktokPixelId" placeholder="TikTok Pixel ID"></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>TikTok Access Token</label><input type="text" id="cfgTiktokAccessToken" placeholder="TikTok Access Token"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:14px;"><label>Snapchat Pixel ID</label><input type="text" id="cfgSnapPixelId" placeholder="Snapchat Pixel ID"></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Snapchat Access Token</label><input type="text" id="cfgSnapAccessToken" placeholder="Snapchat Access Token"></div>
+          </div>
+          <button class="btn btn-gold" style="margin-top:10px;" onclick="savePixelSettings()">حفظ إعدادات البيكسل</button>
         </div>
       </div>
     </div>

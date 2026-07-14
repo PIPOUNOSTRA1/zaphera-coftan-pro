@@ -347,18 +347,44 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div class="dash-grid">
         <div class="card">
           <div class="card-head"><div class="card-title">معلومات المتجر</div></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>اسم المتجر</label><input type="text" value="زاڤيرا كوفتان"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>رقم الواتساب</label><input type="text" value="+213 XXX XXX XXX"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني</label><input type="email" value="contact@zaphera.dz"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>وصف المتجر</label><textarea>دار أزياء جزائرية فاخرة — قفطان، كراكو، فساتين سهرة وزفاف بلمسة جزائرية أصيلة.</textarea></div>
-          <button class="btn btn-gold">حفظ التغييرات</button>
+          <div class="form-group" style="margin-bottom:14px;"><label>اسم المتجر</label><input type="text" id="cfgStoreName" value="زاڤيرا كوفتان"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>رقم الواتساب</label><input type="text" id="cfgWhatsappNumber" value="+213 XXX XXX XXX"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني</label><input type="email" id="cfgStoreEmail" value="contact@zaphera.dz"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>وصف المتجر</label><textarea id="cfgStoreDesc">دار أزياء جزائرية فاخرة — قفطان، كراكو، فساتين سهرة وزفاف بلمسة جزائرية أصيلة.</textarea></div>
+          <button class="btn btn-gold" onclick="saveStoreSettings()">حفظ التغييرات</button>
         </div>
         <div class="card">
           <div class="card-head"><div class="card-title">إعدادات الشحن والتسليم</div></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>تكلفة الشحن الافتراضية (دج)</label><input type="number" value="400"></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>وقت التسليم المتوقع</label><select><option>3 - 5 أيام عمل</option><option>5 - 7 أيام عمل</option><option>1 - 2 أيام عمل</option></select></div>
-          <div class="form-group" style="margin-bottom:14px;"><label>شركة الشحن المفضلة</label><select><option>Yalidine</option><option>Zr Express</option><option>Guepex</option><option>Amana</option></select></div>
-          <button class="btn btn-gold">حفظ إعدادات الشحن</button>
+          <div class="form-group" style="margin-bottom:14px;"><label>تكلفة الشحن الافتراضية (دج)</label><input type="number" id="cfgShippingCost" value="400"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>وقت التسليم المتوقع</label><select id="cfgDeliveryTime"><option>3 - 5 أيام عمل</option><option>5 - 7 أيام عمل</option><option>1 - 2 أيام عمل</option></select></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>شركة الشحن المفضلة</label><select id="cfgShippingCompany"><option>Yalidine</option><option>Zr Express</option><option>Guepex</option><option>Amana</option></select></div>
+          <button class="btn btn-gold" onclick="saveShippingSettings()">حفظ إعدادات الشحن</button>
+        </div>
+      </div>
+      
+      <div class="dash-grid" style="margin-top:20px;">
+        <div class="card">
+          <div class="card-head"><div class="card-title">🔌 إعدادات Google Sheets</div></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>البريد الإلكتروني للحساب الخدمي (Service Account Email)</label><input type="email" id="cfgGoogleEmail" placeholder="example@project.iam.gserviceaccount.com"></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>المفتاح الخاص (Private Key)</label><textarea id="cfgGooglePrivateKey" style="min-height:120px;" placeholder="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"></textarea></div>
+          <div class="form-group" style="margin-bottom:14px;"><label>معرف جدول البيانات (Spreadsheet ID)</label><input type="text" id="cfgGoogleSpreadsheetId" placeholder="spreadsheetIdKeyHere"></div>
+          <button class="btn btn-gold" onclick="saveGoogleSettings()">حفظ إعدادات Google Sheets</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">🎯 إعدادات البيكسل والـ API (Meta, TikTok, Snapchat)</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:14px;"><label>Meta Pixel ID</label><input type="text" id="cfgMetaPixelId" placeholder="Meta Pixel ID"></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Meta Access Token</label><input type="text" id="cfgMetaAccessToken" placeholder="Meta Access Token"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:14px;"><label>TikTok Pixel ID</label><input type="text" id="cfgTiktokPixelId" placeholder="TikTok Pixel ID"></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>TikTok Access Token</label><input type="text" id="cfgTiktokAccessToken" placeholder="TikTok Access Token"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:14px;"><label>Snapchat Pixel ID</label><input type="text" id="cfgSnapPixelId" placeholder="Snapchat Pixel ID"></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Snapchat Access Token</label><input type="text" id="cfgSnapAccessToken" placeholder="Snapchat Access Token"></div>
+          </div>
+          <button class="btn btn-gold" style="margin-top:10px;" onclick="savePixelSettings()">حفظ إعدادات البيكسل</button>
         </div>
       </div>
     </div>
@@ -448,6 +474,7 @@ window.addEventListener('DOMContentLoaded',async ()=>{
   renderOrders(ORDERS);
   renderProducts();
   updateDashboardStats();
+  await loadStoreSettings();
 });
 
 function showPage(id,el){
@@ -456,6 +483,100 @@ function showPage(id,el){
   document.getElementById('page-'+id).classList.add('active');
   el.classList.add('active');
   if(id==='analytics')setTimeout(()=>renderChart('analyticsChart'),50);
+}
+
+async function loadStoreSettings() {
+  try {
+    const res = await fetch(BACKEND_URL + '/api/settings');
+    if (res.ok) {
+      const s = await res.json();
+      // Store Info
+      if (document.getElementById('cfgStoreName')) document.getElementById('cfgStoreName').value = s.storeName || '';
+      if (document.getElementById('cfgWhatsappNumber')) document.getElementById('cfgWhatsappNumber').value = s.whatsappNumber || '';
+      if (document.getElementById('cfgStoreEmail')) document.getElementById('cfgStoreEmail').value = s.email || '';
+      if (document.getElementById('cfgStoreDesc')) document.getElementById('cfgStoreDesc').value = s.description || '';
+      
+      // Shipping Info
+      if (document.getElementById('cfgShippingCost')) document.getElementById('cfgShippingCost').value = s.shippingCost || 400;
+      if (document.getElementById('cfgDeliveryTime')) document.getElementById('cfgDeliveryTime').value = s.deliveryTime || '3 - 5 أيام عمل';
+      if (document.getElementById('cfgShippingCompany')) document.getElementById('cfgShippingCompany').value = s.shippingCompany || 'Yalidine';
+      
+      // Google Sheets
+      if (document.getElementById('cfgGoogleEmail')) document.getElementById('cfgGoogleEmail').value = s.googleEmail || '';
+      if (document.getElementById('cfgGooglePrivateKey')) document.getElementById('cfgGooglePrivateKey').value = s.googlePrivateKey || '';
+      if (document.getElementById('cfgGoogleSpreadsheetId')) document.getElementById('cfgGoogleSpreadsheetId').value = s.googleSpreadsheetId || '';
+      
+      // Pixels
+      if (document.getElementById('cfgMetaPixelId')) document.getElementById('cfgMetaPixelId').value = s.metaPixelId || '';
+      if (document.getElementById('cfgMetaAccessToken')) document.getElementById('cfgMetaAccessToken').value = s.metaAccessToken || '';
+      if (document.getElementById('cfgTiktokPixelId')) document.getElementById('cfgTiktokPixelId').value = s.tiktokPixelId || '';
+      if (document.getElementById('cfgTiktokAccessToken')) document.getElementById('cfgTiktokAccessToken').value = s.tiktokAccessToken || '';
+      if (document.getElementById('cfgSnapPixelId')) document.getElementById('cfgSnapPixelId').value = s.snapPixelId || '';
+      if (document.getElementById('cfgSnapAccessToken')) document.getElementById('cfgSnapAccessToken').value = s.snapAccessToken || '';
+    }
+  } catch (err) {
+    console.error('Failed to load settings:', err);
+  }
+}
+
+async function updateSettingsAPI(data, successMessage) {
+  try {
+    const res = await fetch(BACKEND_URL + '/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      alert('✅ ' + successMessage);
+      await loadStoreSettings();
+    } else {
+      const err = await res.json();
+      alert('❌ فشل الحفظ: ' + (err.error || 'خطأ غير معروف'));
+    }
+  } catch (err) {
+    console.error('Failed to save settings:', err);
+    alert('❌ فشل الاتصال بالخادم لحفظ الإعدادات');
+  }
+}
+
+function saveStoreSettings() {
+  const data = {
+    storeName: document.getElementById('cfgStoreName').value.trim(),
+    whatsappNumber: document.getElementById('cfgWhatsappNumber').value.trim(),
+    email: document.getElementById('cfgStoreEmail').value.trim(),
+    description: document.getElementById('cfgStoreDesc').value.trim()
+  };
+  updateSettingsAPI(data, 'تم حفظ معلومات المتجر بنجاح!');
+}
+
+function saveShippingSettings() {
+  const data = {
+    shippingCost: Number(document.getElementById('cfgShippingCost').value) || 0,
+    deliveryTime: document.getElementById('cfgDeliveryTime').value,
+    shippingCompany: document.getElementById('cfgShippingCompany').value
+  };
+  updateSettingsAPI(data, 'تم حفظ إعدادات الشحن بنجاح!');
+}
+
+function saveGoogleSettings() {
+  const data = {
+    googleEmail: document.getElementById('cfgGoogleEmail').value.trim(),
+    googlePrivateKey: document.getElementById('cfgGooglePrivateKey').value.trim(),
+    googleSpreadsheetId: document.getElementById('cfgGoogleSpreadsheetId').value.trim()
+  };
+  updateSettingsAPI(data, 'تم حفظ إعدادات Google Sheets بنجاح!');
+}
+
+function savePixelSettings() {
+  const data = {
+    metaPixelId: document.getElementById('cfgMetaPixelId').value.trim(),
+    metaAccessToken: document.getElementById('cfgMetaAccessToken').value.trim(),
+    tiktokPixelId: document.getElementById('cfgTiktokPixelId').value.trim(),
+    tiktokAccessToken: document.getElementById('cfgTiktokAccessToken').value.trim(),
+    snapPixelId: document.getElementById('cfgSnapPixelId').value.trim(),
+    snapAccessToken: document.getElementById('cfgSnapAccessToken').value.trim()
+  };
+  updateSettingsAPI(data, 'تم حفظ إعدادات البيكسل بنجاح!');
 }
 
 function renderOrders(data){

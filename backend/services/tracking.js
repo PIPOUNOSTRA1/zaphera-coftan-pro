@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { getSettings } = require('./settingsService');
 
 function sha256(data) {
   if (!data) return '';
@@ -6,6 +7,7 @@ function sha256(data) {
 }
 
 exports.fireServerEvent = async (eventName, order) => {
+  const settings = getSettings();
   const eventTime = Math.floor(Date.now() / 1000);
   const eventId = order.pixelEventId || `ZF-EV-${order.id}`;
 
@@ -13,8 +15,8 @@ exports.fireServerEvent = async (eventName, order) => {
   const hashedEmail = order.email ? sha256(order.email) : '';
 
   // ── 1. Meta Conversions API (CAPI) ──
-  const metaPixelId = process.env.META_PIXEL_ID;
-  const metaToken = process.env.META_ACCESS_TOKEN;
+  const metaPixelId = settings.metaPixelId || process.env.META_PIXEL_ID;
+  const metaToken = settings.metaAccessToken || process.env.META_ACCESS_TOKEN;
   if (metaPixelId && metaToken) {
     try {
       const payload = {
@@ -53,8 +55,8 @@ exports.fireServerEvent = async (eventName, order) => {
   }
 
   // ── 2. TikTok Events API ──
-  const ttPixelId = process.env.TIKTOK_PIXEL_ID;
-  const ttToken = process.env.TIKTOK_ACCESS_TOKEN;
+  const ttPixelId = settings.tiktokPixelId || process.env.TIKTOK_PIXEL_ID;
+  const ttToken = settings.tiktokAccessToken || process.env.TIKTOK_ACCESS_TOKEN;
   if (ttPixelId && ttToken) {
     try {
       const payload = {
@@ -97,8 +99,8 @@ exports.fireServerEvent = async (eventName, order) => {
   }
 
   // ── 3. Snapchat Conversions API ──
-  const snapPixelId = process.env.SNAP_PIXEL_ID;
-  const snapToken = process.env.SNAP_ACCESS_TOKEN;
+  const snapPixelId = settings.snapPixelId || process.env.SNAP_PIXEL_ID;
+  const snapToken = settings.snapAccessToken || process.env.SNAP_ACCESS_TOKEN;
   if (snapPixelId && snapToken) {
     try {
       const payload = {

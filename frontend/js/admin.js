@@ -31,6 +31,7 @@ window.addEventListener('DOMContentLoaded',async ()=>{
   renderOrders(ORDERS);
   renderProducts();
   updateDashboardStats();
+  await loadStoreSettings();
 });
 
 function showPage(id,el){
@@ -39,6 +40,100 @@ function showPage(id,el){
   document.getElementById('page-'+id).classList.add('active');
   el.classList.add('active');
   if(id==='analytics')setTimeout(()=>renderChart('analyticsChart'),50);
+}
+
+async function loadStoreSettings() {
+  try {
+    const res = await fetch(BACKEND_URL + '/api/settings');
+    if (res.ok) {
+      const s = await res.json();
+      // Store Info
+      if (document.getElementById('cfgStoreName')) document.getElementById('cfgStoreName').value = s.storeName || '';
+      if (document.getElementById('cfgWhatsappNumber')) document.getElementById('cfgWhatsappNumber').value = s.whatsappNumber || '';
+      if (document.getElementById('cfgStoreEmail')) document.getElementById('cfgStoreEmail').value = s.email || '';
+      if (document.getElementById('cfgStoreDesc')) document.getElementById('cfgStoreDesc').value = s.description || '';
+      
+      // Shipping Info
+      if (document.getElementById('cfgShippingCost')) document.getElementById('cfgShippingCost').value = s.shippingCost || 400;
+      if (document.getElementById('cfgDeliveryTime')) document.getElementById('cfgDeliveryTime').value = s.deliveryTime || '3 - 5 أيام عمل';
+      if (document.getElementById('cfgShippingCompany')) document.getElementById('cfgShippingCompany').value = s.shippingCompany || 'Yalidine';
+      
+      // Google Sheets
+      if (document.getElementById('cfgGoogleEmail')) document.getElementById('cfgGoogleEmail').value = s.googleEmail || '';
+      if (document.getElementById('cfgGooglePrivateKey')) document.getElementById('cfgGooglePrivateKey').value = s.googlePrivateKey || '';
+      if (document.getElementById('cfgGoogleSpreadsheetId')) document.getElementById('cfgGoogleSpreadsheetId').value = s.googleSpreadsheetId || '';
+      
+      // Pixels
+      if (document.getElementById('cfgMetaPixelId')) document.getElementById('cfgMetaPixelId').value = s.metaPixelId || '';
+      if (document.getElementById('cfgMetaAccessToken')) document.getElementById('cfgMetaAccessToken').value = s.metaAccessToken || '';
+      if (document.getElementById('cfgTiktokPixelId')) document.getElementById('cfgTiktokPixelId').value = s.tiktokPixelId || '';
+      if (document.getElementById('cfgTiktokAccessToken')) document.getElementById('cfgTiktokAccessToken').value = s.tiktokAccessToken || '';
+      if (document.getElementById('cfgSnapPixelId')) document.getElementById('cfgSnapPixelId').value = s.snapPixelId || '';
+      if (document.getElementById('cfgSnapAccessToken')) document.getElementById('cfgSnapAccessToken').value = s.snapAccessToken || '';
+    }
+  } catch (err) {
+    console.error('Failed to load settings:', err);
+  }
+}
+
+async function updateSettingsAPI(data, successMessage) {
+  try {
+    const res = await fetch(BACKEND_URL + '/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      alert('✅ ' + successMessage);
+      await loadStoreSettings();
+    } else {
+      const err = await res.json();
+      alert('❌ فشل الحفظ: ' + (err.error || 'خطأ غير معروف'));
+    }
+  } catch (err) {
+    console.error('Failed to save settings:', err);
+    alert('❌ فشل الاتصال بالخادم لحفظ الإعدادات');
+  }
+}
+
+function saveStoreSettings() {
+  const data = {
+    storeName: document.getElementById('cfgStoreName').value.trim(),
+    whatsappNumber: document.getElementById('cfgWhatsappNumber').value.trim(),
+    email: document.getElementById('cfgStoreEmail').value.trim(),
+    description: document.getElementById('cfgStoreDesc').value.trim()
+  };
+  updateSettingsAPI(data, 'تم حفظ معلومات المتجر بنجاح!');
+}
+
+function saveShippingSettings() {
+  const data = {
+    shippingCost: Number(document.getElementById('cfgShippingCost').value) || 0,
+    deliveryTime: document.getElementById('cfgDeliveryTime').value,
+    shippingCompany: document.getElementById('cfgShippingCompany').value
+  };
+  updateSettingsAPI(data, 'تم حفظ إعدادات الشحن بنجاح!');
+}
+
+function saveGoogleSettings() {
+  const data = {
+    googleEmail: document.getElementById('cfgGoogleEmail').value.trim(),
+    googlePrivateKey: document.getElementById('cfgGooglePrivateKey').value.trim(),
+    googleSpreadsheetId: document.getElementById('cfgGoogleSpreadsheetId').value.trim()
+  };
+  updateSettingsAPI(data, 'تم حفظ إعدادات Google Sheets بنجاح!');
+}
+
+function savePixelSettings() {
+  const data = {
+    metaPixelId: document.getElementById('cfgMetaPixelId').value.trim(),
+    metaAccessToken: document.getElementById('cfgMetaAccessToken').value.trim(),
+    tiktokPixelId: document.getElementById('cfgTiktokPixelId').value.trim(),
+    tiktokAccessToken: document.getElementById('cfgTiktokAccessToken').value.trim(),
+    snapPixelId: document.getElementById('cfgSnapPixelId').value.trim(),
+    snapAccessToken: document.getElementById('cfgSnapAccessToken').value.trim()
+  };
+  updateSettingsAPI(data, 'تم حفظ إعدادات البيكسل بنجاح!');
 }
 
 function renderOrders(data){

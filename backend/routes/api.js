@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
 const dashController = require('../controllers/dashController');
+const settingsController = require('../controllers/settingsController');
 const validation = require('../middleware/validation');
 
 // Orders endpoints
@@ -15,6 +16,10 @@ router.get('/dashboard', dashController.getDashboardStats);
 router.get('/products', dashController.getProducts);
 router.get('/customers', dashController.getCustomers);
 router.get('/statistics', dashController.getStatistics);
+
+// Settings endpoints
+router.get('/settings', settingsController.getSettings);
+router.post('/settings', settingsController.updateSettings);
 
 // Analytics traffic tracking
 router.post('/visit', dashController.trackVisit);

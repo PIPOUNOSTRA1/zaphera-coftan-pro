@@ -1,9 +1,11 @@
 const { google } = require('googleapis');
+const { getSettings } = require('./settingsService');
 
 exports.syncOrder = async (order) => {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY;
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
+  const settings = getSettings();
+  const email = settings.googleEmail || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = settings.googlePrivateKey || process.env.GOOGLE_PRIVATE_KEY;
+  const spreadsheetId = settings.googleSpreadsheetId || process.env.GOOGLE_SPREADSHEET_ID;
 
   if (!email || !privateKey || !spreadsheetId) {
     console.warn('⚠️ Google Sheets credentials not configured. Skipping sheet sync.');
