@@ -2954,6 +2954,136 @@ html[dir="ltr"] .live-alert-popup {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
+const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' ? 'https://zaphera-coftan-pro-1-m.onrender.com' : '';
+const API_URL = BACKEND_URL + '/api';
+
+// Unique event ID generated on page load for browser-to-server deduplication
+const pageEventId = 'ZF-EV-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
+
+// Extract UTM parameters from query string
+function getUTMParameters() {
+  const params = new URLSearchParams(window.location.search);
+  const utms = [];
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(key => {
+    if (params.get(key)) {
+      utms.push(`${key}=${params.get(key)}`);
+    }
+  });
+  return utms.join('&');
+}
+
+// Determine customer acquisition source
+function getOrderSource() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('utm_source') || (document.referrer ? new URL(document.referrer).hostname : 'Direct');
+}
+
+// Unified client-side pixel event tracking (Meta, TikTok, Snapchat, GA4)
+function trackBrowserEvent(eventName, eventData = {}) {
+  const eventId = eventData.event_id || pageEventId;
+  const value = eventData.value || 0;
+
+  console.log(`📡 [Browser Pixel] Event: ${eventName} (ID: ${eventId})`, eventData);
+
+  // 1. Meta Pixel
+  if (typeof fbq === 'function') {
+    fbq('track', eventName, {
+      value: value,
+      currency: 'DZD',
+      ...eventData
+    }, { eventID: eventId });
+  }
+
+  // 2. TikTok Pixel
+  if (typeof ttq === 'function') {
+    ttq.track(eventName, {
+      value: value,
+      currency: 'DZD',
+      ...eventData
+    }, { event_id: eventId });
+  }
+
+  // 3. Snapchat Pixel
+  if (typeof snaptr === 'function') {
+    let snapEvent = eventName;
+    if (eventName === 'Purchase') snapEvent = 'PURCHASE';
+    if (eventName === 'PageView') snapEvent = 'PAGE_VIEW';
+    if (eventName === 'AddToCart') snapEvent = 'ADD_CART';
+    if (eventName === 'InitiateCheckout') snapEvent = 'START_CHECKOUT';
+
+    snaptr('track', snapEvent, {
+      price: value,
+      currency: 'DZD',
+      ...eventData,
+      uuid_c1: eventId
+    });
+  }
+
+  // 4. GA4 (Google Analytics)
+  if (typeof gtag === 'function') {
+    gtag('event', eventName, {
+      value: value,
+      currency: 'DZD',
+      event_id: eventId,
+      ...eventData
+    });
+  }
+}
+
+async function initDynamicPixels() {
+  try {
+    const res = await fetch(API_URL + '/settings');
+    if (!res.ok) {
+      trackBrowserEvent('PageView');
+      return;
+    }
+    const settings = await res.json();
+    
+    // 1. Meta Pixel
+    if (settings.metaPixelId) {
+      console.log('Initializing Meta Pixel:', settings.metaPixelId);
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      fbq('init', settings.metaPixelId);
+    }
+    
+    // 2. TikTok Pixel
+    if (settings.tiktokPixelId) {
+      console.log('Initializing TikTok Pixel:', settings.tiktokPixelId);
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var e=0;e<ttq.methods.length;e++)ttq.setAndDefer(ttq,ttq.methods[e]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.mixpool;w[t]._i=w[t]._i||{},w[t]._i[e]=[],w[t]._i[e]._u=r,w[t]._t=w[t]._t||+new Date,w[t]._o=w[t]._o||{},w[t]._o[e]=n||{};var a=d.createElement("script");a.type="text/javascript",a.async=!0,a.src=r+"?sdkid="+e+"&lib="+t;var i=d.getElementsByTagName("script")[0];i.parentNode.insertBefore(a,i)};
+        ttq.load(settings.tiktokPixelId);
+        ttq.page();
+      }(window, document, 'ttq');
+    }
+    
+    // 3. Snapchat Pixel
+    if (settings.snapPixelId) {
+      console.log('Initializing Snapchat Pixel:', settings.snapPixelId);
+      (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+      {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+      a.queue=[];var s=t.createElement(n);s.async=!0;
+      s.src="https://sc-static.net/scevent.min.js";
+      var r=t.getElementsByTagName(n)[0];r.parentNode.insertBefore(s,r)}
+      )(window,document,"script");
+      
+      snaptr('init', settings.snapPixelId);
+    }
+    
+    trackBrowserEvent('PageView');
+  } catch (err) {
+    console.error('Error initializing dynamic pixels:', err);
+    trackBrowserEvent('PageView');
+  }
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
 /* =========================================================
@@ -3914,6 +4044,11 @@ function addToCart(productId, size, quantity, measurements = null) {
     JSON.stringify(item.measurements) === JSON.stringify(measurements)
   );
   
+  const p = productsData.find(pd => pd.id === productId);
+  if (p) {
+    trackBrowserEvent('AddToCart', { content_name: p.name, value: p.price * quantity });
+  }
+  
   if (existingIndex > -1) {
     cart[existingIndex].quantity += quantity;
   } else {
@@ -4107,6 +4242,8 @@ function openQuickView(productId) {
   const p = productsData.find(item => item.id === productId);
   if (!p) return;
   
+  trackBrowserEvent('ViewContent', { content_name: p.name, value: p.price });
+  
   activeProductId = productId;
   selectedSize = '38';
   document.getElementById('qvQty').textContent = '1';
@@ -4233,6 +4370,9 @@ function handleOrderSubmit(e) {
     <div class="invoice-row total"><span>${translations[currentLang].total}</span> <span>${formatPrice(finalTotal)}</span></div>
   `;
   
+  const purchaseEventId = 'ZF-EV-' + orderId.replace('#', '');
+  trackBrowserEvent('Purchase', { value: finalTotal, event_id: purchaseEventId });
+
   const newOrder = {
     id: orderId.replace('#', ''),
     name: name,
@@ -4241,7 +4381,8 @@ function handleOrderSubmit(e) {
     product: orderProducts.join(' + '),
     amount: finalTotal,
     status: 'pending',
-    date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+    pixelEventId: purchaseEventId
   };
   
   // Save order to server with localStorage fallback
@@ -4598,6 +4739,11 @@ function switchLanguage(lang) {
 
 /* ---------------- Setup Event Listeners and Initializers ---------------- */
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize dynamic pixels on page load
+  initDynamicPixels();
+
+  // Record visit traffic on server
+  fetch(API_URL + '/visit', { method: 'POST' }).catch(err => console.warn('Failed to track visit on server', err));
   // Lang switch button
   const langBtn = document.querySelector('.lang-switch');
   if (langBtn) {
@@ -4724,6 +4870,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('submitOrderBtn').addEventListener('click', (e) => {
     const form = document.getElementById('checkoutForm');
     if (form.reportValidity()) {
+      trackBrowserEvent('InitiateCheckout');
       handleOrderSubmit(e);
     }
   });
@@ -4905,6 +5052,8 @@ let ppViewerInterval = null;
 function openProductPage(productId) {
   const p = productsData.find(item => item.id === productId);
   if (!p) return;
+  
+  trackBrowserEvent('ViewContent', { content_name: p.name, value: p.price });
   
   ppCurrentProduct = p;
   const page = document.getElementById('productPage');
@@ -5327,6 +5476,9 @@ function ppHandleOrderSubmit(e) {
       `;
     }
     
+    const purchaseEventId = 'ZF-EV-' + orderId.replace('#', '');
+    trackBrowserEvent('Purchase', { value: total, event_id: purchaseEventId });
+
     const newOrder = {
       id: orderId.replace('#', ''),
       name: name,
@@ -5335,7 +5487,8 @@ function ppHandleOrderSubmit(e) {
       product: productName,
       amount: total,
       status: 'pending',
-      date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+      date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+      pixelEventId: purchaseEventId
     };
     
     // Save order to server with localStorage fallback

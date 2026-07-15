@@ -74,8 +74,62 @@ function trackBrowserEvent(eventName, eventData = {}) {
   }
 }
 
+async function initDynamicPixels() {
+  try {
+    const res = await fetch(API_URL + '/settings');
+    if (!res.ok) {
+      trackBrowserEvent('PageView');
+      return;
+    }
+    const settings = await res.json();
+    
+    // 1. Meta Pixel
+    if (settings.metaPixelId) {
+      console.log('Initializing Meta Pixel:', settings.metaPixelId);
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      fbq('init', settings.metaPixelId);
+    }
+    
+    // 2. TikTok Pixel
+    if (settings.tiktokPixelId) {
+      console.log('Initializing TikTok Pixel:', settings.tiktokPixelId);
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var e=0;e<ttq.methods.length;e++)ttq.setAndDefer(ttq,ttq.methods[e]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.mixpool;w[t]._i=w[t]._i||{},w[t]._i[e]=[],w[t]._i[e]._u=r,w[t]._t=w[t]._t||+new Date,w[t]._o=w[t]._o||{},w[t]._o[e]=n||{};var a=d.createElement("script");a.type="text/javascript",a.async=!0,a.src=r+"?sdkid="+e+"&lib="+t;var i=d.getElementsByTagName("script")[0];i.parentNode.insertBefore(a,i)};
+        ttq.load(settings.tiktokPixelId);
+        ttq.page();
+      }(window, document, 'ttq');
+    }
+    
+    // 3. Snapchat Pixel
+    if (settings.snapPixelId) {
+      console.log('Initializing Snapchat Pixel:', settings.snapPixelId);
+      (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+      {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+      a.queue=[];var s=t.createElement(n);s.async=!0;
+      s.src="https://sc-static.net/scevent.min.js";
+      var r=t.getElementsByTagName(n)[0];r.parentNode.insertBefore(s,r)}
+      )(window,document,"script");
+      
+      snaptr('init', settings.snapPixelId);
+    }
+    
+    trackBrowserEvent('PageView');
+  } catch (err) {
+    console.error('Error initializing dynamic pixels:', err);
+    trackBrowserEvent('PageView');
+  }
+}
+
 // Track initial PageView
-trackBrowserEvent('PageView');
+initDynamicPixels();
 
 // Record visit traffic on server
 fetch(`${API_URL}/visit`, { method: 'POST' }).catch(err => console.warn('Failed to track visit on server', err));
@@ -1367,6 +1421,9 @@ function handleOrderSubmit(e) {
     <div class="invoice-row total"><span>${translations[currentLang].total}</span> <span>${formatPrice(finalTotal)}</span></div>
   `;
   
+  const purchaseEventId = 'ZF-EV-' + orderId.replace('#', '');
+  trackBrowserEvent('Purchase', { value: finalTotal, event_id: purchaseEventId });
+
   const newOrder = {
     id: orderId.replace('#', ''),
     name: name,
@@ -1375,7 +1432,8 @@ function handleOrderSubmit(e) {
     product: orderProducts.join(' + '),
     amount: finalTotal,
     status: 'pending',
-    date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+    pixelEventId: purchaseEventId
   };
   
   // Save order to server with localStorage fallback
@@ -2461,6 +2519,9 @@ function ppHandleOrderSubmit(e) {
       `;
     }
     
+    const purchaseEventId = 'ZF-EV-' + orderId.replace('#', '');
+    trackBrowserEvent('Purchase', { value: total, event_id: purchaseEventId });
+
     const newOrder = {
       id: orderId.replace('#', ''),
       name: name,
@@ -2469,7 +2530,8 @@ function ppHandleOrderSubmit(e) {
       product: productName,
       amount: total,
       status: 'pending',
-      date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' })
+      date: new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+      pixelEventId: purchaseEventId
     };
     
     // Save order to server with localStorage fallback
