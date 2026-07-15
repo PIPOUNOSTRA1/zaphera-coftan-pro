@@ -1,0 +1,16 @@
+{
+  "name": "zaphera-coftan-pro",
+  "version": "1.0.0",
+  "description": "Zaphera Luxury Ecommerce Store - Root Configuration",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "postinstall": "npm install --prefix backend",
+    "build": "npm install --prefix backend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
