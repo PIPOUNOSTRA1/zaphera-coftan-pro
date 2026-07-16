@@ -43,19 +43,71 @@ nav{
   transition:all .5s ease;
   border-bottom:1px solid transparent;
 }
-nav.scrolled{background:rgba(251,247,239,0.82);backdrop-filter:blur(16px);border-color:var(--line);padding:14px 5%;}
-.logo{font-family:'Cairo',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--ivory);}
+nav.scrolled{background:rgba(251,247,239,0.85);backdrop-filter:blur(16px);border-color:var(--line);padding:14px 5%;}
+.logo{font-family:'Cairo',sans-serif;font-size:1.6rem;letter-spacing:2px;color:#faf6ee;transition:color .3s ease;}
 .logo span{color:var(--gold);}
 .navlinks{display:flex;gap:38px;list-style:none;}
-.navlinks a{color:var(--ivory);text-decoration:none;font-size:.95rem;font-weight:500;letter-spacing:.5px;position:relative;opacity:1;transition:opacity .3s;}
+.navlinks a{color:#faf6ee;text-decoration:none;font-size:.95rem;font-weight:500;letter-spacing:.5px;position:relative;opacity:1;transition:color .3s, opacity .3s;}
 .navlinks a::after{content:'';position:absolute;bottom:-6px;right:0;width:0;height:1px;background:var(--gold);transition:width .35s ease;}
 .navlinks a:hover{color:var(--gold);}
 .navlinks a:hover::after{width:100%;}
 .navicons{display:flex;gap:20px;align-items:center;}
-.navicons button{background:none;border:none;color:var(--ivory);cursor:pointer;font-size:1.1rem;opacity:1;transition:opacity .3s, transform .3s;}
+.navicons button{background:none;border:none;color:#faf6ee;cursor:pointer;font-size:1.1rem;opacity:1;transition:color .3s, opacity .3s, transform .3s;}
 .navicons button:hover{color:var(--gold);transform:translateY(-1px);}
 .lang-switch{border:1px solid var(--line);border-radius:20px;padding:5px 14px;font-size:.82rem;color:var(--gold-soft);font-weight:600;}
-@media(max-width:900px){.navlinks{display:none;}}
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #faf6ee;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.menu-toggle:hover {
+  color: var(--gold);
+}
+
+/* Scrolled colors over light sections */
+nav.scrolled .logo { color: var(--ivory); }
+nav.scrolled .navlinks a { color: var(--ivory); }
+nav.scrolled .navicons button { color: var(--ivory); }
+nav.scrolled .menu-toggle { color: var(--ivory); }
+
+@media(max-width:900px){
+  .menu-toggle {
+    display: block !important;
+  }
+  .navlinks {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(251, 247, 239, 0.98);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+    padding: 24px 5%;
+    gap: 20px;
+    z-index: 99;
+    box-shadow: 0 10px 30px rgba(26,18,8,0.15);
+  }
+  .navlinks.open {
+    display: flex;
+  }
+  .navlinks a {
+    color: var(--ivory) !important;
+    font-size: 1.05rem;
+    padding: 8px 0;
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid rgba(196,154,60,0.1);
+  }
+  .navlinks a::after {
+    display: none;
+  }
+}
 
 /* ---------- HERO ---------- */
 .hero{
@@ -2113,7 +2165,7 @@ html[dir="ltr"] .live-alert-popup {
 
 <nav id="nav">
   <div class="logo">زاڤيرا <span>ك</span></div>
-  <ul class="navlinks">
+  <ul class="navlinks" id="navLinksList">
     <li><a href="#collection">المجموعة</a></li>
     <li><a href="#caftan">القفطان</a></li>
     <li><a href="#karakou">الكراكو</a></li>
@@ -2125,6 +2177,7 @@ html[dir="ltr"] .live-alert-popup {
     <button title="بحث">⚲</button>
     <button title="المفضلة">♡</button>
     <button title="السلة">⛃</button>
+    <button class="menu-toggle" id="menuToggleBtn" aria-label="القائمة">☰</button>
   </div>
 </nav>
 
@@ -2364,18 +2417,8 @@ html[dir="ltr"] .live-alert-popup {
             </select>
           </div>
           <div class="form-group">
-            <label for="clientCommune" id="lblClientCommune">البلدية *</label>
-            <select id="clientCommune" required disabled>
-              <option value="" disabled selected>اختر أولاً الولاية...</option>
-            </select>
-          </div>
-          <div class="form-group">
             <label for="clientAddress" id="lblClientAddress">العنوان الكامل *</label>
             <input type="text" id="clientAddress" required placeholder="مثال: حي 5 جويلية، عمارة 4، الجزائر">
-          </div>
-          <div class="form-group-checkbox">
-            <input type="checkbox" id="deskDelivery">
-            <label for="deskDelivery" id="lblDeskDelivery">توصيل للمكتب (Stop Desk) - تكلفة شحن أقل</label>
           </div>
         </form>
       </div>
@@ -2628,64 +2671,13 @@ html[dir="ltr"] .live-alert-popup {
               </div>
             </div>
 
-            <!-- Size Selection -->
-            <div style="margin-bottom: 20px;">
-              <label style="display: block; font-size: 0.78rem; font-weight: 600; color: var(--ivory); margin-bottom: 8px; letter-spacing: 0.5px;">
-                <span class="req">*</span> المقاس المطلوب:
-              </label>
-              <div class="size-options" id="ppSizeOptions">
-                <button type="button" class="size-btn pp-size-btn active" data-size="38">FR 38</button>
-                <button type="button" class="size-btn pp-size-btn" data-size="40">FR 40</button>
-                <button type="button" class="size-btn pp-size-btn" data-size="42">FR 42</button>
-                <button type="button" class="size-btn pp-size-btn" data-size="44">FR 44</button>
-                <button type="button" class="size-btn pp-size-btn" data-size="46">FR 46</button>
-                <button type="button" class="size-btn pp-size-btn" data-size="custom" id="ppCustomSizeBtn" style="border-color: var(--gold); color: var(--gold-soft);">📐 تفصيل مخصص (على مقاسكِ)</button>
-              </div>
-            </div>
-
-            <!-- Custom measurements container (collapsible) -->
-            <div class="custom-measurements" id="ppCustomMeasurementsSection" style="display: none; margin-bottom: 20px; border-radius: 0; background: rgba(184,134,58,0.03); border: 1px dashed var(--gold);">
-              <h4 id="ppTxtCustomFittingTitle" style="font-family: inherit; font-size: 0.85rem; color: var(--gold-soft); margin-bottom: 12px; font-weight: 600;">القياسات المطلوبة (بالسنتيمتر):</h4>
-              <div class="measurements-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                <div class="pp-field">
-                  <label for="ppMChest" style="display:block; font-size:0.75rem; margin-bottom:4px;">الصدر</label>
-                  <input type="number" id="ppMChest" placeholder="سم" style="padding: 8px 12px;">
-                </div>
-                <div class="pp-field">
-                  <label for="ppMWaist" style="display:block; font-size:0.75rem; margin-bottom:4px;">الخصر</label>
-                  <input type="number" id="ppMWaist" placeholder="سم" style="padding: 8px 12px;">
-                </div>
-                <div class="pp-field">
-                  <label for="ppMHips" style="display:block; font-size:0.75rem; margin-bottom:4px;">الأوراك</label>
-                  <input type="number" id="ppMHips" placeholder="سم" style="padding: 8px 12px;">
-                </div>
-                <div class="pp-field">
-                  <label for="ppMShoulders" style="display:block; font-size:0.75rem; margin-bottom:4px;">الكتفين</label>
-                  <input type="number" id="ppMShoulders" placeholder="سم" style="padding: 8px 12px;">
-                </div>
-                <div class="pp-field" style="grid-column: span 2;">
-                  <label for="ppMHeight" style="display:block; font-size:0.75rem; margin-bottom:4px;">الطول الكلي (من الكتف للأسفل)</label>
-                  <input type="number" id="ppMHeight" placeholder="سم" style="padding: 8px 12px;">
-                </div>
-              </div>
-              <p class="custom-note" id="ppTxtCustomFittingNote" style="font-size: 0.72rem; color: var(--grey); margin-top: 10px;">* سيتم التفصيل خصيصاً على مقاسكِ، قد يتطلب الشحن 4-6 أيام إضافية للتفصيل والخياطة.</p>
-            </div>
-
-            <!-- Wilaya + Commune -->
+            <!-- Wilaya -->
             <div class="pp-form-grid">
-              <div class="pp-field">
+              <div class="pp-field pp-form-full">
                 <label for="ppWilaya"><span class="req">*</span> الولاية</label>
                 <div class="pp-select-wrap">
                   <select id="ppWilaya" required>
                     <option value="" disabled selected>اختاري الولاية...</option>
-                  </select>
-                </div>
-              </div>
-              <div class="pp-field">
-                <label for="ppCommune"><span class="req">*</span> البلدية</label>
-                <div class="pp-commune-wrap">
-                  <select id="ppCommune" required disabled>
-                    <option value="" disabled selected>اختاري أولاً الولاية...</option>
                   </select>
                 </div>
               </div>
@@ -2697,27 +2689,6 @@ html[dir="ltr"] .live-alert-popup {
                 <label for="ppAddress"><span class="req">*</span> العنوان الكامل</label>
                 <input type="text" id="ppAddress" placeholder="الحي، الشارع، رقم البناية..." autocomplete="street-address" required>
               </div>
-            </div>
-
-            <!-- Delivery Type -->
-            <div style="margin-bottom:12px;">
-              <p style="font-size:0.78rem;font-weight:600;color:var(--ivory);margin-bottom:10px;">طريقة التوصيل:</p>
-              <div class="pp-delivery-toggle">
-                <button type="button" class="pp-delivery-btn active" id="ppDeliveryHome">
-                  🏠 توصيل للمنزل
-                  <span class="pp-delivery-price" id="ppHomeFee">—</span>
-                </button>
-                <button type="button" class="pp-delivery-btn" id="ppDeliveryDesk">
-                  🏢 Stop Desk (أوفر)
-                  <span class="pp-delivery-price" id="ppDeskFee">—</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Notes (optional) -->
-            <div class="pp-field" style="margin-bottom:20px;">
-              <label for="ppNotes">ملاحظات (اختياري) — مقاسكِ أو أي طلب خاص</label>
-              <textarea id="ppNotes" rows="2" placeholder="مثال: مقاس 42، أريد اللون الأخضر الداكن..."></textarea>
             </div>
 
             <!-- Order Summary -->
@@ -4301,17 +4272,20 @@ function handleOrderSubmit(e) {
   const name = document.getElementById('clientName').value.trim();
   const phone = document.getElementById('clientPhone').value.trim();
   const wilayaCode = document.getElementById('clientWilaya').value;
-  const commune = document.getElementById('clientCommune').value;
   const address = document.getElementById('clientAddress').value.trim();
-  const isStopDesk = document.getElementById('deskDelivery').checked;
   
   if (!wilayaCode) {
     alert(translations[currentLang].validation_wilaya);
     return;
   }
   
-  if (!commune) {
-    alert(currentLang === 'ar' ? '⚠️ يرجى اختيار البلدية' : '⚠️ Veuillez choisir la commune');
+  if (!name || name.length < 2) {
+    alert(currentLang === 'ar' ? '⚠️ يرجى إدخال الاسم الكامل' : '⚠️ Veuillez entrer votre nom complet');
+    return;
+  }
+
+  if (!address) {
+    alert(currentLang === 'ar' ? '⚠️ يرجى إدخال العنوان الكامل' : '⚠️ Veuillez entrer votre adresse complète');
     return;
   }
   
@@ -4331,6 +4305,7 @@ function handleOrderSubmit(e) {
   
   let subtotal = 0;
   let itemsHTML = '';
+  const orderProducts = [];
   
   cart.forEach(item => {
     const p = productsData.find(pd => pd.id === item.id);
@@ -4339,10 +4314,10 @@ function handleOrderSubmit(e) {
     const itemTotal = p.price * item.quantity;
     subtotal += itemTotal;
     
-    const sizeText = item.size === 'custom' ? translations[currentLang].custom_size_badge : `FR ${item.size}`;
+    orderProducts.push(`${nameText} (x${item.quantity})`);
     itemsHTML += `
       <div class="invoice-row" style="font-size: 0.85rem; color: var(--grey);">
-        <span>${nameText} (x${item.quantity}) [${sizeText}]</span>
+        <span>${nameText} (x${item.quantity})</span>
         <span>${formatPrice(itemTotal)}</span>
       </div>
     `;
@@ -4350,7 +4325,6 @@ function handleOrderSubmit(e) {
   
   const shippingCost = calculateShippingCost();
   const finalTotal = subtotal + shippingCost;
-  const deliveryTypeText = isStopDesk ? translations[currentLang].invoice_desk : translations[currentLang].invoice_home;
   
   const invoiceBox = document.getElementById('invoiceBox');
   invoiceBox.innerHTML = `
@@ -4358,9 +4332,7 @@ function handleOrderSubmit(e) {
     <div class="invoice-row"><strong>${translations[currentLang].invoice_client}</strong> <span>${name}</span></div>
     <div class="invoice-row"><strong>${translations[currentLang].invoice_phone}</strong> <span>${phone}</span></div>
     <div class="invoice-row"><strong>${translations[currentLang].invoice_wilaya}</strong> <span>${wilayaCode} - ${wilayaName}</span></div>
-    <div class="invoice-row"><strong>${translations[currentLang].client_commune.replace(' *', '')}:</strong> <span>${commune}</span></div>
     <div class="invoice-row"><strong>${translations[currentLang].invoice_address}</strong> <span>${address}</span></div>
-    <div class="invoice-row" style="margin-bottom: 12px;"><strong>${translations[currentLang].invoice_delivery}</strong> <span>${deliveryTypeText}</span></div>
     
     <div style="border-top:1px dashed var(--line); padding-top:10px; margin-top:10px;"></div>
     ${itemsHTML}
@@ -4378,6 +4350,8 @@ function handleOrderSubmit(e) {
     name: name,
     phone: phone,
     wilaya: selectedWilaya ? selectedWilaya.name : wilayaCode,
+    commune: '',
+    address: address,
     product: orderProducts.join(' + '),
     amount: finalTotal,
     status: 'pending',
@@ -4657,14 +4631,8 @@ function switchLanguage(lang) {
   const lblClientWilaya = document.getElementById('lblClientWilaya');
   if (lblClientWilaya) lblClientWilaya.textContent = t.client_wilaya;
   
-  const lblClientCommune = document.getElementById('lblClientCommune');
-  if (lblClientCommune) lblClientCommune.textContent = t.client_commune;
-  
   const lblClientAddress = document.getElementById('lblClientAddress');
   if (lblClientAddress) lblClientAddress.textContent = t.client_address;
-  
-  const lblDeskDelivery = document.getElementById('lblDeskDelivery');
-  if (lblDeskDelivery) lblDeskDelivery.textContent = t.desk_delivery;
   
   const txtSubtotal = document.getElementById('txtSubtotal');
   if (txtSubtotal) txtSubtotal.textContent = t.subtotal;
@@ -4739,6 +4707,33 @@ function switchLanguage(lang) {
 
 /* ---------------- Setup Event Listeners and Initializers ---------------- */
 document.addEventListener('DOMContentLoaded', () => {
+  // Mobile menu toggle
+  const menuToggleBtn = document.getElementById('menuToggleBtn');
+  const navLinksList = document.getElementById('navLinksList');
+  if (menuToggleBtn && navLinksList) {
+    menuToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navLinksList.classList.toggle('open');
+      menuToggleBtn.textContent = navLinksList.classList.contains('open') ? '✕' : '☰';
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (navLinksList.classList.contains('open') && !navLinksList.contains(e.target) && e.target !== menuToggleBtn) {
+        navLinksList.classList.remove('open');
+        menuToggleBtn.textContent = '☰';
+      }
+    });
+
+    // Close menu when a link is clicked
+    navLinksList.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinksList.classList.remove('open');
+        menuToggleBtn.textContent = '☰';
+      });
+    });
+  }
+
   // Initialize dynamic pixels on page load
   initDynamicPixels();
 
@@ -4841,30 +4836,9 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModal('quickViewModal');
   });
   
-  // Shipping Form Event Handlers
   document.getElementById('clientWilaya').addEventListener('change', (e) => {
-    const code = e.target.value;
-    const commSelect = document.getElementById('clientCommune');
-    if (commSelect) {
-      const communes = communesData[code] || [];
-      commSelect.innerHTML = '';
-      if (communes.length > 0) {
-        commSelect.innerHTML = `<option value="" disabled selected>${currentLang === 'ar' ? 'اختر البلدية...' : 'Choisir la commune...'}</option>`;
-        communes.forEach(c => {
-          const opt = document.createElement('option');
-          opt.value = c;
-          opt.textContent = c;
-          commSelect.appendChild(opt);
-        });
-        commSelect.disabled = false;
-      } else {
-        commSelect.innerHTML = '<option value="" disabled selected>لا تتوفر بلديات</option>';
-        commSelect.disabled = true;
-      }
-    }
     renderCart();
   });
-  document.getElementById('deskDelivery').addEventListener('click', renderCart);
   
   // Checkout Form Submission
   document.getElementById('submitOrderBtn').addEventListener('click', (e) => {
@@ -5144,28 +5118,8 @@ function openProductPage(productId) {
   const form = document.getElementById('ppOrderForm');
   if (form) form.reset();
   document.getElementById('ppWilaya').value = '';
-  document.getElementById('ppCommune').innerHTML = '<option value="" disabled selected>اختاري أولاً الولاية...</option>';
-  document.getElementById('ppCommune').disabled = true;
   document.getElementById('ppSumShipping').textContent = 'اختاري الولاية';
   document.getElementById('ppSumTotal').textContent = '—';
-  document.getElementById('ppHomeFee').textContent = '—';
-  document.getElementById('ppDeskFee').textContent = '—';
-  
-  // Reset size selection
-  document.querySelectorAll('.pp-size-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-size') === '38');
-  });
-  const customSec = document.getElementById('ppCustomMeasurementsSection');
-  if (customSec) {
-    customSec.style.display = 'none';
-  }
-  ['ppMChest', 'ppMWaist', 'ppMHips', 'ppMShoulders', 'ppMHeight'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.value = '';
-      el.classList.remove('valid', 'invalid');
-    }
-  });
   
   // Reset delivery type
   ppDeliveryType = 'home';
@@ -5245,14 +5199,9 @@ function ppUpdateShipping() {
   if (!w) return;
   
   const homeFee = w.homeFee;
-  const deskFee = w.deskFee;
   
-  // Update delivery buttons prices
-  document.getElementById('ppHomeFee').textContent = formatPrice(homeFee);
-  document.getElementById('ppDeskFee').textContent = formatPrice(deskFee);
-  
-  // Current shipping
-  const shipping = ppDeliveryType === 'home' ? homeFee : deskFee;
+  // Current shipping (always home delivery now)
+  const shipping = homeFee;
   const total = ppCurrentProduct.price + shipping;
   
   document.getElementById('ppSumShipping').textContent = formatPrice(shipping);
@@ -5334,14 +5283,7 @@ function ppHandleOrderSubmit(e) {
   const name = document.getElementById('ppName').value.trim();
   const phone = document.getElementById('ppPhone').value.trim().replace(/\s+/g, '');
   const wilayaCode = document.getElementById('ppWilaya').value;
-  const commune = document.getElementById('ppCommune').value;
   const address = document.getElementById('ppAddress').value.trim();
-  
-  // Size selection
-  const sizeBtn = document.querySelector('.pp-size-btn.active');
-  const size = sizeBtn ? sizeBtn.getAttribute('data-size') : '38';
-  
-  let customMeasurements = null;
   
   // Validate
   if (!name) {
@@ -5360,36 +5302,6 @@ function ppHandleOrderSubmit(e) {
   }
   ppHighlightField('ppPhone', true);
   
-  // Custom Size validations
-  if (size === 'custom') {
-    const chest = document.getElementById('ppMChest').value.trim();
-    const waist = document.getElementById('ppMWaist').value.trim();
-    const hips = document.getElementById('ppMHips').value.trim();
-    const shoulders = document.getElementById('ppMShoulders').value.trim();
-    const height = document.getElementById('ppMHeight').value.trim();
-    
-    if (!chest || !waist || !hips || !shoulders || !height) {
-      showToast('⚠️ يرجى ملء جميع حقول المقاس المخصص لبدء التفصيل', '', null);
-      ['ppMChest', 'ppMWaist', 'ppMHips', 'ppMShoulders', 'ppMHeight'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && !el.value) {
-          el.style.borderColor = '#e53935';
-        } else if (el) {
-          el.style.borderColor = 'var(--line)';
-        }
-      });
-      ppShakeBtn();
-      return;
-    }
-    
-    customMeasurements = { chest, waist, hips, shoulders, height };
-    // reset border color
-    ['ppMChest', 'ppMWaist', 'ppMHips', 'ppMShoulders', 'ppMHeight'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.borderColor = 'var(--line)';
-    });
-  }
-  
   if (!wilayaCode) {
     document.getElementById('ppWilaya').style.borderColor = '#e53935';
     showToast('⚠️ يرجى اختيار الولاية', '', null);
@@ -5397,14 +5309,6 @@ function ppHandleOrderSubmit(e) {
     return;
   }
   document.getElementById('ppWilaya').style.borderColor = '#4caf50';
-  
-  if (!commune) {
-    document.getElementById('ppCommune').style.borderColor = '#e53935';
-    showToast('⚠️ يرجى اختيار البلدية', '', null);
-    ppShakeBtn();
-    return;
-  }
-  document.getElementById('ppCommune').style.borderColor = '#4caf50';
   
   if (!address) {
     ppHighlightField('ppAddress', false);
@@ -5434,25 +5338,10 @@ function ppHandleOrderSubmit(e) {
     
     const selectedWilaya = wilayas.find(w => w.code === wilayaCode);
     const wilayaName = selectedWilaya ? selectedWilaya.name : wilayaCode;
-    const shipping = ppDeliveryType === 'home' ? selectedWilaya.homeFee : selectedWilaya.deskFee;
+    const shipping = selectedWilaya ? selectedWilaya.homeFee : 0;
     const total = p.price + shipping;
     const orderId = '#ZF-' + Math.floor(1000 + Math.random() * 9000);
     const productName = currentLang === 'ar' ? p.name : p.name_fr;
-    const deliveryText = ppDeliveryType === 'home' ? '🏠 توصيل للمنزل' : '🏢 Stop Desk';
-    const notes = document.getElementById('ppNotes').value.trim();
-    
-    const sizeDisplay = size === 'custom' 
-      ? (currentLang === 'ar' ? '📐 تفصيل مخصص' : '📐 Sur Mesure') 
-      : `FR ${size}`;
-      
-    let measHTML = '';
-    if (customMeasurements) {
-      measHTML = `
-        <div style="font-size:0.75rem;color:var(--gold);margin-top:2px;direction:ltr;text-align:right;">
-          [صدر: ${customMeasurements.chest} | خصر: ${customMeasurements.waist} | أوراك: ${customMeasurements.hips} | كتفين: ${customMeasurements.shoulders} | طول: ${customMeasurements.height}]
-        </div>
-      `;
-    }
     
     // Fill success overlay
     document.getElementById('ppSuccessOrderId').textContent = orderId;
@@ -5463,11 +5352,7 @@ function ppHandleOrderSubmit(e) {
         <div style="margin-bottom:6px;"><strong>العميلة:</strong> ${name}</div>
         <div style="margin-bottom:6px;"><strong>الهاتف:</strong> ${phone}</div>
         <div style="margin-bottom:6px;"><strong>الولاية:</strong> ${wilayaCode} - ${wilayaName}</div>
-        <div style="margin-bottom:6px;"><strong>البلدية:</strong> ${commune}</div>
         <div style="margin-bottom:6px;"><strong>العنوان:</strong> ${address}</div>
-        <div style="margin-bottom:6px;"><strong>المقاس:</strong> ${sizeDisplay} ${measHTML}</div>
-        <div style="margin-bottom:6px;"><strong>التوصيل:</strong> ${deliveryText}</div>
-        ${notes ? `<div style="margin-bottom:6px;"><strong>ملاحظات:</strong> ${notes}</div>` : ''}
         <div style="border-top:1px dashed rgba(184,134,58,0.3);margin:10px 0;padding-top:10px;">
           <div style="margin-bottom:4px;"><strong>المنتج:</strong> ${productName} — ${formatPrice(p.price)}</div>
           <div style="margin-bottom:4px;"><strong>الشحن:</strong> ${formatPrice(shipping)}</div>
@@ -5484,6 +5369,8 @@ function ppHandleOrderSubmit(e) {
       name: name,
       phone: phone,
       wilaya: wilayaName,
+      commune: '',
+      address: address,
       product: productName,
       amount: total,
       status: 'pending',
