@@ -1423,6 +1423,41 @@ html[dir="ltr"] .live-alert-popup {
 .pp-gallery:hover .pp-gallery-img {
   transform: scale(1.03);
 }
+.pp-gallery-thumbs {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+  background: rgba(9, 8, 10, 0.4);
+  padding: 8px 12px;
+  border-radius: 30px;
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  backdrop-filter: blur(10px);
+  max-width: 90%;
+  overflow-x: auto;
+}
+.pp-gallery-thumb {
+  width: 50px;
+  height: 60px;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center top;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+.pp-gallery-thumb:hover {
+  opacity: 0.9;
+}
+.pp-gallery-thumb.active {
+  border-color: var(--gold);
+  opacity: 1;
+  transform: scale(1.05);
+}
 .pp-gallery-badge {
   position: absolute;
   top: 24px;
@@ -2583,6 +2618,7 @@ html[dir="ltr"] .live-alert-popup {
       <!-- Gallery Side -->
       <div class="pp-gallery" id="ppGallery">
         <div class="pp-gallery-img" id="ppGalleryImg"></div>
+        <div class="pp-gallery-thumbs" id="ppGalleryThumbs"></div>
         <div class="pp-gallery-overlay"></div>
         <div class="pp-gallery-badge" id="ppGalleryBadge" style="display:none;"></div>
       </div>
@@ -3542,6 +3578,7 @@ const productsData = [
     tag: 'جديد',
     tag_fr: 'Nouveau',
     image: 'assets/caftan-zahia.png',
+    images: ['assets/caftan-zahia.png', 'assets/caftan-zahia-detail1.png', 'assets/caftan-zahia-detail2.png'],
     grids: ['grid-new', 'grid-caftan', 'grid-best'],
     desc: 'قفطان مخملي (قطيفة) باللون الأخضر الزمردي الملكي، مطرز يدوياً بخيوط الذهب الفاخرة على طول الصدر والأكمام، بتصميم أندلسي راقٍ يجمع بين التراث والمعاصرة.',
     desc_fr: 'Caftan d\'exception en velours vert émeraude royal, brodé manuellement au fil d\'or précieux le long du col et des manches, coupe andalouse royale.'
@@ -5051,6 +5088,34 @@ function openProductPage(productId) {
     galleryImg.style.backgroundImage = `url('${p.image}')`;
     galleryImg.style.backgroundSize = 'cover';
     galleryImg.style.backgroundPosition = 'center top';
+  }
+  
+  // Populate Gallery Images & Thumbnails
+  const thumbsContainer = document.getElementById('ppGalleryThumbs');
+  if (thumbsContainer) {
+    thumbsContainer.innerHTML = '';
+    const imgList = p.images || [p.image];
+    
+    if (imgList.length > 1) {
+      thumbsContainer.style.display = 'flex';
+      imgList.forEach((imgUrl, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = `pp-gallery-thumb${idx === 0 ? ' active' : ''}`;
+        thumb.style.backgroundImage = `url('${imgUrl}')`;
+        thumb.addEventListener('click', () => {
+          // Update main image
+          if (galleryImg) {
+            galleryImg.style.backgroundImage = `url('${imgUrl}')`;
+          }
+          // Update active thumb
+          thumbsContainer.querySelectorAll('.pp-gallery-thumb').forEach(t => t.classList.remove('active'));
+          thumb.classList.add('active');
+        });
+        thumbsContainer.appendChild(thumb);
+      });
+    } else {
+      thumbsContainer.style.display = 'none';
+    }
   }
   
   // Badge
