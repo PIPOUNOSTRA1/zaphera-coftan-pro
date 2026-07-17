@@ -3113,10 +3113,26 @@ gsap.registerPlugin(ScrollTrigger);
     '✦ زاڤيرا تُتوّجكِ — أنتِ البطلة دائمًا'
   ];
 
-  /* ── Force muted ── */
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  /* ── Force muted & loop ── */
   video.muted = true;
   video.setAttribute('muted','');
+  video.loop = true;
+  video.setAttribute('loop','');
   video.load();
+
+  if (isMobile) {
+    ScrollTrigger.create({
+      trigger: wrap,
+      start: 'top bottom',
+      end: 'bottom top',
+      onEnter: () => video.play().catch(()=>{}),
+      onEnterBack: () => video.play().catch(()=>{}),
+      onLeave: () => video.pause(),
+      onLeaveBack: () => video.pause()
+    });
+  }
 
   /* ── Unlock once: play then pause so currentTime becomes writable ── */
   let unlocked = false;
@@ -3158,12 +3174,14 @@ gsap.registerPlugin(ScrollTrigger);
   /* ─── Apply all scroll-driven changes ─── */
   function applyProgress(p){
 
-    /* 1 ── VIDEO SEEK — only seek if time change is meaningful */
-    const dur = video.duration;
-    if(dur > 0){
-      const targetTime = p * dur;
-      if(Math.abs(video.currentTime - targetTime) > 0.04) {
-        try{ video.currentTime = targetTime; }catch(e){}
+    /* 1 ── VIDEO SEEK — only seek if time change is meaningful (desktop only) */
+    if (!isMobile) {
+      const dur = video.duration;
+      if(dur > 0){
+        const targetTime = p * dur;
+        if(Math.abs(video.currentTime - targetTime) > 0.04) {
+          try{ video.currentTime = targetTime; }catch(e){}
+        }
       }
     }
 
@@ -3197,17 +3215,24 @@ gsap.registerPlugin(ScrollTrigger);
     }
 
     /* 5 ── VIDEO zoom + sharpen */
-    const scale  = (0.62 + p*0.38).toFixed(3);
-    const blur   = Math.max(0, 6 - p*6).toFixed(2);
-    const bright = (0.55 + p*0.33).toFixed(3);
-    const sat    = (0.80 + p*0.20).toFixed(3);
-    const yPct   = (6   - p*6).toFixed(2);
-    const tf     = 'scale('+scale+') translateY('+yPct+'%)';
-    const fi     = 'blur('+blur+'px) brightness('+bright+') saturate('+sat+')';
-    video.style.transform = tf;
-    video.style.filter    = fi;
-    const img = wrap.querySelector('.runway-figure img');
-    if(img){ img.style.transform = tf; img.style.filter = fi; }
+    if (isMobile) {
+      const scale  = (0.75 + p*0.25).toFixed(3);
+      const tf     = 'scale('+scale+')';
+      video.style.transform = tf;
+      video.style.filter    = '';
+    } else {
+      const scale  = (0.62 + p*0.38).toFixed(3);
+      const blur   = Math.max(0, 6 - p*6).toFixed(2);
+      const bright = (0.55 + p*0.33).toFixed(3);
+      const sat    = (0.80 + p*0.20).toFixed(3);
+      const yPct   = (6   - p*6).toFixed(2);
+      const tf     = 'scale('+scale+') translateY('+yPct+'%)';
+      const fi     = 'blur('+blur+'px) brightness('+bright+') saturate('+sat+')';
+      video.style.transform = tf;
+      video.style.filter    = fi;
+      const img = wrap.querySelector('.runway-figure img');
+      if(img){ img.style.transform = tf; img.style.filter = fi; }
+    }
   }
 
   /* ─── RAF loop ─── */
