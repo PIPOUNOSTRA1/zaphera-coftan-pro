@@ -7,6 +7,72 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/admin.css">
+<style>
+/* Toggle Switch Style */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #333240;
+  transition: .3s;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text2);
+  transition: .3s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--gold3);
+  border-color: var(--gold);
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+  background-color: var(--gold);
+}
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg3);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.toggle-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.toggle-sub {
+  font-size: 0.7rem;
+  color: var(--text2);
+}
+</style>
 
 </head>
 <body>
@@ -236,94 +302,189 @@
 </div>
 
 <!-- ADD PRODUCT MODAL -->
+<!-- ADD PRODUCT MODAL -->
 <div class="overlay" id="addProductModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="width:700px; max-width:95vw;">
-    <div class="modal-title" id="productModalTitle">👑 إضافة منتج جديد</div>
+  <div class="modal" style="width:820px; max-width:95vw; max-height:92vh; overflow-y:auto; border-radius:12px;">
+    <div class="modal-title" id="productModalTitle" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:12px;">
+      <span>👑 إدارة خصائص المنتج الكاملة</span>
+      <span style="font-size:0.75rem; color:var(--text2); font-weight:normal;" id="mProdIdText"></span>
+    </div>
     <input type="hidden" id="mProdIdHidden">
     
-    <div class="form-row">
-      <div class="form-group">
-        <label>اسم المنتج (بالعربية)</label>
-        <input type="text" id="mProdName" placeholder="مثال: قفطان لالة زاهية">
+    <div style="display:grid; grid-template-columns:1fr 300px; gap:24px; text-align:right;">
+      
+      <!-- Right Side: Basic Info & Description -->
+      <div>
+        <div style="font-size:0.85rem; font-weight:700; color:var(--gold); margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.04); padding-bottom:6px;">📂 البيانات والأسعار الأساسية</div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>اسم المنتج (بالعربية)</label>
+            <input type="text" id="mProdName" placeholder="مثال: قفطان لالة زاهية">
+          </div>
+          <div class="form-group">
+            <label>اسم المنتج (بالفرنسية)</label>
+            <input type="text" id="mProdNameFr" placeholder="Example: Caftan Lalla Zahia">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>المعرف الفريد (ID) - لا يتغير بعد الإنشاء</label>
+            <input type="text" id="mProdId" placeholder="مثال: caftan-zahia">
+          </div>
+          <div class="form-group">
+            <label>رمز الـ SKU (رمز المخزن)</label>
+            <input type="text" id="mProdSku" placeholder="مثال: UA50106CFT">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>الرابط اللطيف للمنتج (Slug)</label>
+            <input type="text" id="mProdSlug" placeholder="مثال: caftan-lalla-zahia">
+          </div>
+          <div class="form-group">
+            <label>أولوية الترتيب في الظهور (Priority)</label>
+            <input type="number" id="mProdPriority" placeholder="0" value="0">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div class="form-group">
+            <label>سعر البيع (دج)</label>
+            <input type="number" id="mProdPrice" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>سعر الشطب/التخفيض</label>
+            <input type="number" id="mProdOldPrice" placeholder="اختياري">
+          </div>
+          <div class="form-group">
+            <label>تكلفة المنتج (لحساب الصافي)</label>
+            <input type="number" id="mProdCost" placeholder="0">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>الصورة الرئيسية للمنتج</label>
+            <input type="text" id="mProdImage" placeholder="مثال: assets/caftan-zahia.png">
+          </div>
+          <div class="form-group">
+            <label>الأوسمة (Tags)</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <input type="text" id="mProdTag" placeholder="عربي: جديد">
+              <input type="text" id="mProdTagFr" placeholder="فرنسي: Nouveau">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>معرض الصور الإضافية للفساتين (روابط تفصل بينها بفاصلة `,` )</label>
+          <input type="text" id="mProdImages" placeholder="مثال: assets/caftan-zahia-detail1.png, assets/caftan-zahia-detail2.png">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>وصف المنتج بالتفصيل (عربي)</label>
+            <textarea id="mProdDesc" style="min-height:90px;" placeholder="اكتب تفاصيل ومميزات القفطان..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>وصف المنتج بالتفصيل (فرنسي)</label>
+            <textarea id="mProdDescFr" style="min-height:90px;" placeholder="Description détaillée du produit..."></textarea>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>اسم المنتج (بالفرنسية)</label>
-        <input type="text" id="mProdNameFr" placeholder="Example: Caftan Lalla Zahia">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label>المعرف الفريد (ID) - بالإنجليزية وبدون مسافات</label>
-        <input type="text" id="mProdId" placeholder="مثال: caftan-zahia">
-      </div>
-      <div class="form-group">
-        <label>سعر المنتج (دج)</label>
-        <input type="number" id="mProdPrice" placeholder="0">
+
+      <!-- Left Side: Custom Pixel, Grids, Landing Page Toggles -->
+      <div style="border-right:1px solid rgba(255,255,255,0.06); padding-right:18px;">
+        <div style="font-size:0.85rem; font-weight:700; color:var(--gold); margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.04); padding-bottom:6px;">⚙️ إعدادات المتجر المتقدمة</div>
+        
+        <!-- Toggle: Landing Page Mode -->
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">صفحة هبوط منفصلة</span>
+            <span class="toggle-sub">إخفاء الأشكال التقليدية للمتجر</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="mProdIsLandingPage">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Toggle: Digital Product -->
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">منتج رقمي</span>
+            <span class="toggle-sub">توصيل الكود تلقائياً بعد الشراء</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="mProdIsDigital" onchange="document.getElementById('digitalGroup').style.display = this.checked ? 'block' : 'none'">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-group" id="digitalGroup" style="display:none; margin-bottom:14px;">
+          <label>كود المنتج الرقمي (كود التسليم)</label>
+          <input type="text" id="mProdDigitalCode" placeholder="مثال: ZAPHERA-VIP-CODE">
+        </div>
+
+        <!-- Custom Pixel Block -->
+        <div style="background:var(--bg3); border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:14px;">
+          <div style="font-size:0.78rem; font-weight:700; margin-bottom:8px; color:var(--text);">📡 بيكسل تتبع مخصص للمنتج</div>
+          <div style="display:grid; grid-template-columns:90px 1fr; gap:8px;">
+            <select id="mProdPixelType" style="padding:6px; font-size:0.78rem; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px;">
+              <option value="none">بدون</option>
+              <option value="tiktok">TikTok</option>
+              <option value="facebook">Meta/FB</option>
+              <option value="snapchat">Snapchat</option>
+            </select>
+            <input type="text" id="mProdPixelId" style="padding:6px; font-size:0.78rem;" placeholder="Pixel ID">
+          </div>
+        </div>
+
+        <!-- Social Proof Counters -->
+        <div style="background:var(--bg3); border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:14px;">
+          <div style="font-size:0.78rem; font-weight:700; margin-bottom:8px; color:var(--text);">📈 إحصائيات وهمية للإقناع</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div class="form-group" style="gap:2px;">
+              <label style="font-size:0.68rem;">المشاهدون الآن</label>
+              <input type="number" id="mProdFakeViewers" style="padding:6px; font-size:0.78rem;" value="12">
+            </div>
+            <div class="form-group" style="gap:2px;">
+              <label style="font-size:0.68rem;">الطلبيات/المباع</label>
+              <input type="number" id="mProdFakeOrders" style="padding:6px; font-size:0.78rem;" value="248">
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid Selection Checkboxes -->
+        <div class="form-group">
+          <label>أقسام عرض المنتج في المتجر (Grids)</label>
+          <div style="display:flex; flex-direction:column; gap:8px; background:var(--bg3); padding:10px; border-radius:8px; border:1px solid var(--border); max-height:140px; overflow-y:auto;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:normal; font-size:0.78rem;">
+              <input type="checkbox" name="mProdGrids" value="grid-new"> القسم الجديد (New)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:normal; font-size:0.78rem;">
+              <input type="checkbox" name="mProdGrids" value="grid-caftan"> قفطان (Caftans)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:normal; font-size:0.78rem;">
+              <input type="checkbox" name="mProdGrids" value="grid-karakou"> كراكو (Karakou)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:normal; font-size:0.78rem;">
+              <input type="checkbox" name="mProdGrids" value="grid-wedding"> فساتين زفاف (Wedding)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:normal; font-size:0.78rem;">
+              <input type="checkbox" name="mProdGrids" value="grid-best"> الأكثر مبيعاً (Best Sellers)
+            </label>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>السعر القديم (دج) - اختياري للتخفيض</label>
-        <input type="number" id="mProdOldPrice" placeholder="مثال: 58000">
-      </div>
-      <div class="form-group">
-        <label>الصورة الرئيسية للمنتج (رابط أو مسار)</label>
-        <input type="text" id="mProdImage" placeholder="مثال: assets/caftan-zahia.png">
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>الوسم بالعربية</label>
-        <input type="text" id="mProdTag" placeholder="مثال: جديد / الأكثر مبيعاً">
-      </div>
-      <div class="form-group">
-        <label>الوسم بالفرنسية</label>
-        <input type="text" id="mProdTagFr" placeholder="Example: Nouveau / Populaire">
-      </div>
-    </div>
-
-    <div class="form-group" style="margin-bottom:14px;">
-      <label>روابط الصور الإضافية (تفاصيل المنتج) - تفصل بينها بفاصلة `,`</label>
-      <input type="text" id="mProdImages" placeholder="مثال: assets/caftan-zahia-detail1.png, assets/caftan-zahia-detail2.png">
-    </div>
-
-    <div class="form-group" style="margin-bottom:14px;">
-      <label>أقسام عرض المنتج في المتجر (الشبكات المتقاطعة Grids)</label>
-      <div style="display:flex; gap:16px; flex-wrap:wrap; background:var(--bg3); padding:10px; border-radius:8px; border:1px solid var(--border);">
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
-          <input type="checkbox" name="mProdGrids" value="grid-new"> القسم الجديد (New)
-        </label>
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
-          <input type="checkbox" name="mProdGrids" value="grid-caftan"> قفطان (Caftans)
-        </label>
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
-          <input type="checkbox" name="mProdGrids" value="grid-karakou"> كراكو (Karakou)
-        </label>
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
-          <input type="checkbox" name="mProdGrids" value="grid-wedding"> فساتين زفاف (Wedding)
-        </label>
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
-          <input type="checkbox" name="mProdGrids" value="grid-best"> الأكثر مبيعاً (Best Sellers)
-        </label>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>وصف المنتج بالعربية</label>
-        <textarea id="mProdDesc" placeholder="قفطان مخملي راقٍ مطرز يدوياً..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>وصف المنتج بالفرنسية</label>
-        <textarea id="mProdDescFr" placeholder="Caftan d'exception en velours..."></textarea>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-gold" onclick="saveProductForm()">✅ حفظ المنتج</button>
+    <div class="modal-footer" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px;">
+      <button class="btn btn-gold" onclick="saveProductForm()">✅ حفظ المنتج والخيارات</button>
       <button class="btn btn-outline" onclick="closeProductModal()">إلغاء</button>
     </div>
   </div>

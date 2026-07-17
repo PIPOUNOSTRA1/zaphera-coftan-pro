@@ -2583,6 +2583,11 @@ html[dir="ltr"] .live-alert-popup {
     <p id="txtSuccessDesc">تم استلام طلبكِ بنجاح تحت الرقم: <strong id="successOrderId">#ZF-1002</strong></p>
     <p style="color:var(--grey); font-size:0.9rem; margin-top:8px;" id="txtSuccessNote">سيتصل بكِ فريق مبيعات زاڤيرا خلال 24 ساعة لتأكيد المقاسات وتأكيد الشحن.</p>
     
+    <div id="successDigitalDelivery" style="display:none; background:rgba(212,175,55,0.1); border:1px dashed #d4af37; padding:15px; border-radius:8px; margin:15px 0; color:#fff; direction:rtl; text-align:right;">
+      <div style="font-weight:700; color:#d4af37; margin-bottom:6px;">🔑 كود تسليم المنتج الرقمي:</div>
+      <div id="successDigitalCode" style="font-family:monospace; font-size:1.1rem; letter-spacing:1px; background:#111; padding:8px; border-radius:4px; border:1px solid #333; text-align:center;"></div>
+    </div>
+    
     <div class="invoice-box" id="invoiceBox">
       <!-- Dynamic Invoice details will be shown here -->
     </div>
@@ -2941,6 +2946,12 @@ html[dir="ltr"] .live-alert-popup {
     <div class="pp-success-order" id="ppSuccessOrderId">#ZF-0000</div>
     <p>سيتصل بكِ فريق زاڤيرا خلال <strong style="color:var(--gold);">ساعات قليلة</strong> لتأكيد طلبكِ وترتيب الشحن.</p>
     <p style="font-size:0.82rem;color:var(--grey);margin-top:10px;">أضيفي رقمنا: <strong style="color:var(--ivory);">0550 XXX XXX</strong> لتلقي التحديثات</p>
+    
+    <div id="ppSuccessDigitalDelivery" style="display:none; background:rgba(212,175,55,0.1); border:1px dashed #d4af37; padding:15px; border-radius:8px; margin:15px 0; color:#fff; text-align:center;">
+      <div style="font-weight:700; color:#d4af37; margin-bottom:6px;">🔑 كود تسليم المنتج الرقمي:</div>
+      <div id="ppSuccessDigitalCode" style="font-family:monospace; font-size:1.1rem; letter-spacing:1px; background:#111; padding:8px; border-radius:4px; border:1px solid #333; display:inline-block;"></div>
+    </div>
+    
     <div class="pp-success-invoice" id="ppSuccessInvoice"></div>
     <button class="pp-success-close" id="ppSuccessCloseBtn">✓ متابعة التسوق</button>
   </div>
@@ -4455,6 +4466,16 @@ function handleOrderSubmit(e) {
     localStorage.setItem('zf_orders', JSON.stringify(savedOrders));
   })();
 
+  // Check if there is any digital product in the checkout
+  let digitalItem = null;
+  for (let item of cart) {
+    const prod = productsData.find(p => p.id === item.productId);
+    if (prod && prod.isDigital && prod.digitalCode) {
+      digitalItem = prod;
+      break;
+    }
+  }
+
   // Clear cart
   cart = [];
   localStorage.setItem('zf_cart', JSON.stringify(cart));
@@ -4462,6 +4483,18 @@ function handleOrderSubmit(e) {
   
   // Close Cart, open Success Modal
   closeDrawer('cartDrawer');
+  
+  const digBox = document.getElementById('successDigitalDelivery');
+  const digCode = document.getElementById('successDigitalCode');
+  if (digBox && digCode) {
+    if (digitalItem) {
+      digCode.textContent = digitalItem.digitalCode;
+      digBox.style.display = 'block';
+    } else {
+      digBox.style.display = 'none';
+    }
+  }
+  
   openModal('successModal');
   
   // Clear form
@@ -4822,6 +4855,23 @@ document.addEventListener('DOMContentLoaded', () => {
         productsData = data;
         renderProducts();
         renderCart();
+        
+        // Dynamic product routing & landing page toggle
+        const params = new URLSearchParams(window.location.search);
+        const prodParam = params.get('product') || params.get('p');
+        if (prodParam) {
+          const matched = productsData.find(p => p.id === prodParam || p.slug === prodParam);
+          if (matched) {
+            openProductPage(matched.id);
+          }
+        } else {
+          const lp = productsData.find(p => p.isLandingPage);
+          if (lp) {
+            openProductPage(lp.id);
+            const backBtn = document.getElementById('ppBackBtn');
+            if (backBtn) backBtn.style.display = 'none';
+          }
+        }
       }
     })
     .catch(err => console.warn('Using local fallback products:', err));
@@ -5112,11 +5162,29 @@ let ppCountdownInterval = null;
 let ppViewerInterval = null;
 
 /* -------------------- Open Product Page -------------------- */
+function initProductCustomPixel(p) {
+  if (!p || !p.pixelType || !p.pixelId || p.pixelType === 'none') return;
+  console.log(`📡 Initializing custom product pixel [${p.pixelType}]: ${p.pixelId}`);
+  if (p.pixelType === 'facebook' && typeof fbq === 'function') {
+    try { fbq('init', p.pixelId); } catch(e){}
+  } else if (p.pixelType === 'tiktok' && typeof ttq === 'function') {
+    try { ttq.load(p.pixelId); } catch(e){}
+  } else if (p.pixelType === 'snapchat' && typeof snaptr === 'function') {
+    try { snaptr('init', p.pixelId); } catch(e){}
+  }
+}
+
 function openProductPage(productId) {
   const p = productsData.find(item => item.id === productId);
   if (!p) return;
   
+  initProductCustomPixel(p);
   trackBrowserEvent('ViewContent', { content_name: p.name, value: p.price });
+  
+  const backBtn = document.getElementById('ppBackBtn');
+  if (backBtn) {
+    backBtn.style.display = p.isLandingPage ? 'none' : 'flex';
+  }
   
   ppCurrentProduct = p;
   const page = document.getElementById('productPage');
@@ -5184,7 +5252,7 @@ function openProductPage(productId) {
   
   // Random review count (social proof)
   const rvCount = document.getElementById('ppReviewCount');
-  if (rvCount) rvCount.textContent = Math.floor(140 + Math.random() * 300);
+  if (rvCount) rvCount.textContent = p.fakeOrders || Math.floor(140 + Math.random() * 300);
   
   // Price
   const priceEl = document.getElementById('ppPrice');
@@ -5382,13 +5450,14 @@ function ppStartCountdown() {
 function ppStartViewerSim() {
   if (ppViewerInterval) clearInterval(ppViewerInterval);
   
-  let viewers = 8 + Math.floor(Math.random() * 20);
+  const baseViewers = (ppCurrentProduct && ppCurrentProduct.fakeViewers) ? Number(ppCurrentProduct.fakeViewers) : 12;
+  let viewers = Math.max(5, baseViewers + Math.floor(Math.random() * 5) - 2);
   const el = document.getElementById('ppViewerCount');
   if (el) el.textContent = viewers;
   
   ppViewerInterval = setInterval(() => {
     const delta = Math.floor(Math.random() * 5) - 2;
-    viewers = Math.max(5, Math.min(35, viewers + delta));
+    viewers = Math.max(5, Math.min(baseViewers + 10, viewers + delta));
     const el = document.getElementById('ppViewerCount');
     if (el) el.textContent = viewers;
   }, 4000 + Math.random() * 4000);
@@ -5520,6 +5589,17 @@ function ppHandleOrderSubmit(e) {
     })();
 
     // Show success
+    const ppDigBox = document.getElementById('ppSuccessDigitalDelivery');
+    const ppDigCode = document.getElementById('ppSuccessDigitalCode');
+    if (ppDigBox && ppDigCode) {
+      if (p.isDigital && p.digitalCode) {
+        ppDigCode.textContent = p.digitalCode;
+        ppDigBox.style.display = 'block';
+      } else {
+        ppDigBox.style.display = 'none';
+      }
+    }
+
     const successEl = document.getElementById('ppSuccess');
     if (successEl) successEl.classList.add('show');
     

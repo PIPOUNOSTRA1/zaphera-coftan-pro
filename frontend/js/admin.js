@@ -404,20 +404,35 @@ function renderProducts() {
 }
 
 function openAddProductModal() {
-  document.getElementById('productModalTitle').textContent = '👑 إضافة منتج جديد';
+  document.getElementById('productModalTitle').querySelector('span').textContent = '👑 إضافة منتج جديد';
   document.getElementById('mProdIdHidden').value = '';
   document.getElementById('mProdId').value = '';
   document.getElementById('mProdId').disabled = false;
+  document.getElementById('mProdSku').value = '';
+  document.getElementById('mProdSlug').value = '';
+  document.getElementById('mProdPriority').value = '0';
   document.getElementById('mProdName').value = '';
   document.getElementById('mProdNameFr').value = '';
   document.getElementById('mProdPrice').value = '';
   document.getElementById('mProdOldPrice').value = '';
+  document.getElementById('mProdCost').value = '';
   document.getElementById('mProdImage').value = 'assets/caftan-zahia.png';
   document.getElementById('mProdTag').value = '';
   document.getElementById('mProdTagFr').value = '';
   document.getElementById('mProdImages').value = '';
   document.getElementById('mProdDesc').value = '';
   document.getElementById('mProdDescFr').value = '';
+  
+  document.getElementById('mProdIsLandingPage').checked = false;
+  document.getElementById('mProdIsDigital').checked = false;
+  document.getElementById('mProdDigitalCode').value = '';
+  document.getElementById('digitalGroup').style.display = 'none';
+  
+  document.getElementById('mProdPixelType').value = 'none';
+  document.getElementById('mProdPixelId').value = '';
+  document.getElementById('mProdFakeViewers').value = '12';
+  document.getElementById('mProdFakeOrders').value = '248';
+
   document.querySelectorAll('input[name="mProdGrids"]').forEach(cb => cb.checked = false);
   document.getElementById('addProductModal').classList.add('open');
 }
@@ -426,20 +441,34 @@ function openEditProductModal(productId) {
   const p = PRODUCTS.find(item => item.id === productId);
   if (!p) return;
   
-  document.getElementById('productModalTitle').textContent = '✏️ تعديل منتج: ' + p.name;
+  document.getElementById('productModalTitle').querySelector('span').textContent = '✏️ تعديل منتج: ' + p.name;
   document.getElementById('mProdIdHidden').value = p.id;
   document.getElementById('mProdId').value = p.id;
   document.getElementById('mProdId').disabled = true;
+  document.getElementById('mProdSku').value = p.sku || '';
+  document.getElementById('mProdSlug').value = p.slug || '';
+  document.getElementById('mProdPriority').value = p.priority || '0';
   document.getElementById('mProdName').value = p.name || '';
   document.getElementById('mProdNameFr').value = p.name_fr || '';
   document.getElementById('mProdPrice').value = p.price || '';
   document.getElementById('mProdOldPrice').value = p.oldPrice || '';
+  document.getElementById('mProdCost').value = p.cost || '';
   document.getElementById('mProdImage').value = p.image || '';
   document.getElementById('mProdTag').value = p.tag || '';
   document.getElementById('mProdTagFr').value = p.tag_fr || '';
   document.getElementById('mProdImages').value = p.images ? p.images.join(', ') : '';
   document.getElementById('mProdDesc').value = p.desc || '';
   document.getElementById('mProdDescFr').value = p.desc_fr || '';
+  
+  document.getElementById('mProdIsLandingPage').checked = !!p.isLandingPage;
+  document.getElementById('mProdIsDigital').checked = !!p.isDigital;
+  document.getElementById('mProdDigitalCode').value = p.digitalCode || '';
+  document.getElementById('digitalGroup').style.display = p.isDigital ? 'block' : 'none';
+  
+  document.getElementById('mProdPixelType').value = p.pixelType || 'none';
+  document.getElementById('mProdPixelId').value = p.pixelId || '';
+  document.getElementById('mProdFakeViewers').value = p.fakeViewers || '12';
+  document.getElementById('mProdFakeOrders').value = p.fakeOrders || '248';
   
   document.querySelectorAll('input[name="mProdGrids"]').forEach(cb => {
     cb.checked = p.grids ? p.grids.includes(cb.value) : false;
@@ -455,11 +484,15 @@ function closeProductModal() {
 async function saveProductForm() {
   const idHidden = document.getElementById('mProdIdHidden').value;
   const id = document.getElementById('mProdId').value.trim();
+  const sku = document.getElementById('mProdSku').value.trim();
+  const slug = document.getElementById('mProdSlug').value.trim();
+  const priority = Number(document.getElementById('mProdPriority').value) || 0;
   const name = document.getElementById('mProdName').value.trim();
   const name_fr = document.getElementById('mProdNameFr').value.trim();
   const price = Number(document.getElementById('mProdPrice').value) || 0;
   const oldPriceVal = document.getElementById('mProdOldPrice').value.trim();
   const oldPrice = oldPriceVal ? Number(oldPriceVal) : null;
+  const cost = Number(document.getElementById('mProdCost').value) || 0;
   const image = document.getElementById('mProdImage').value.trim();
   const tag = document.getElementById('mProdTag').value.trim();
   const tag_fr = document.getElementById('mProdTagFr').value.trim();
@@ -467,6 +500,15 @@ async function saveProductForm() {
   const images = imagesStr ? imagesStr.split(',').map(s => s.trim()) : [];
   const desc = document.getElementById('mProdDesc').value.trim();
   const desc_fr = document.getElementById('mProdDescFr').value.trim();
+  
+  const isLandingPage = document.getElementById('mProdIsLandingPage').checked;
+  const isDigital = document.getElementById('mProdIsDigital').checked;
+  const digitalCode = document.getElementById('mProdDigitalCode').value.trim();
+  
+  const pixelType = document.getElementById('mProdPixelType').value;
+  const pixelId = document.getElementById('mProdPixelId').value.trim();
+  const fakeViewers = Number(document.getElementById('mProdFakeViewers').value) || 12;
+  const fakeOrders = Number(document.getElementById('mProdFakeOrders').value) || 248;
   
   const grids = [];
   document.querySelectorAll('input[name="mProdGrids"]:checked').forEach(cb => {
@@ -479,7 +521,8 @@ async function saveProductForm() {
   }
   
   const payload = {
-    id, name, name_fr, price, oldPrice, tag, tag_fr, image, images, grids, desc, desc_fr
+    id, sku, slug, priority, name, name_fr, price, oldPrice, cost, image, images, grids, desc, desc_fr,
+    isLandingPage, isDigital, digitalCode, pixelType, pixelId, fakeViewers, fakeOrders
   };
   
   const isEdit = idHidden !== '';
@@ -494,7 +537,7 @@ async function saveProductForm() {
     });
     
     if (res.ok) {
-      alert(isEdit ? '✅ تم تعديل المنتج بنجاح!' : '✅ تم إضافة المنتج بنجاح!');
+      alert(isEdit ? '✅ تم تعديل المنتج والخيارات بنجاح!' : '✅ تم إضافة المنتج والخيارات بنجاح!');
       PRODUCTS = await loadProductsFromAPI();
       renderProducts();
       closeProductModal();

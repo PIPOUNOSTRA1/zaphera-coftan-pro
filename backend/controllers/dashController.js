@@ -227,15 +227,26 @@ exports.addProduct = async (req, res) => {
       id: newProduct.id,
       name: newProduct.name,
       name_fr: newProduct.name_fr || newProduct.name,
+      sku: newProduct.sku || 'SKU-' + Math.floor(10000 + Math.random() * 90000),
+      slug: newProduct.slug || newProduct.id,
       price: Number(newProduct.price),
       oldPrice: newProduct.oldPrice ? Number(newProduct.oldPrice) : null,
+      cost: newProduct.cost ? Number(newProduct.cost) : 0,
+      priority: newProduct.priority ? Number(newProduct.priority) : 0,
       tag: newProduct.tag || null,
       tag_fr: newProduct.tag_fr || null,
       image: newProduct.image || 'assets/caftan-zahia.png',
       images: Array.isArray(newProduct.images) ? newProduct.images : [],
       grids: Array.isArray(newProduct.grids) ? newProduct.grids : ['grid-new'],
       desc: newProduct.desc || '',
-      desc_fr: newProduct.desc_fr || ''
+      desc_fr: newProduct.desc_fr || '',
+      pixelType: newProduct.pixelType || 'none',
+      pixelId: newProduct.pixelId || '',
+      isLandingPage: !!newProduct.isLandingPage,
+      isDigital: !!newProduct.isDigital,
+      digitalCode: newProduct.digitalCode || '',
+      fakeViewers: newProduct.fakeViewers ? Number(newProduct.fakeViewers) : 12,
+      fakeOrders: newProduct.fakeOrders ? Number(newProduct.fakeOrders) : 248
     };
     
     products.push(productToAdd);
@@ -265,15 +276,26 @@ exports.updateProduct = async (req, res) => {
       ...products[index],
       name: updatedData.name || products[index].name,
       name_fr: updatedData.name_fr || products[index].name_fr,
+      sku: updatedData.sku !== undefined ? updatedData.sku : products[index].sku,
+      slug: updatedData.slug !== undefined ? updatedData.slug : products[index].slug,
       price: updatedData.price !== undefined ? Number(updatedData.price) : products[index].price,
       oldPrice: updatedData.oldPrice !== undefined ? (updatedData.oldPrice ? Number(updatedData.oldPrice) : null) : products[index].oldPrice,
+      cost: updatedData.cost !== undefined ? Number(updatedData.cost) : (products[index].cost || 0),
+      priority: updatedData.priority !== undefined ? Number(updatedData.priority) : (products[index].priority || 0),
       tag: updatedData.tag !== undefined ? (updatedData.tag || null) : products[index].tag,
       tag_fr: updatedData.tag_fr !== undefined ? (updatedData.tag_fr || null) : products[index].tag_fr,
       image: updatedData.image || products[index].image,
       images: Array.isArray(updatedData.images) ? updatedData.images : products[index].images,
       grids: Array.isArray(updatedData.grids) ? updatedData.grids : products[index].grids,
       desc: updatedData.desc !== undefined ? updatedData.desc : products[index].desc,
-      desc_fr: updatedData.desc_fr !== undefined ? updatedData.desc_fr : products[index].desc_fr
+      desc_fr: updatedData.desc_fr !== undefined ? updatedData.desc_fr : products[index].desc_fr,
+      pixelType: updatedData.pixelType !== undefined ? updatedData.pixelType : (products[index].pixelType || 'none'),
+      pixelId: updatedData.pixelId !== undefined ? updatedData.pixelId : (products[index].pixelId || ''),
+      isLandingPage: updatedData.isLandingPage !== undefined ? !!updatedData.isLandingPage : products[index].isLandingPage,
+      isDigital: updatedData.isDigital !== undefined ? !!updatedData.isDigital : products[index].isDigital,
+      digitalCode: updatedData.digitalCode !== undefined ? updatedData.digitalCode : (products[index].digitalCode || ''),
+      fakeViewers: updatedData.fakeViewers !== undefined ? Number(updatedData.fakeViewers) : (products[index].fakeViewers || 12),
+      fakeOrders: updatedData.fakeOrders !== undefined ? Number(updatedData.fakeOrders) : (products[index].fakeOrders || 248)
     };
     
     saveProducts(products);
