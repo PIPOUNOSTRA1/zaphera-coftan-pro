@@ -973,6 +973,8 @@ function renderInstagram() {
     d.style.backgroundImage = `url('${img}')`;
     d.style.backgroundPosition = positions[i % positions.length];
     d.style.transform = transforms[i % transforms.length];
+    d.style.cursor = 'pointer';
+    d.onclick = () => window.open('https://www.instagram.com/zephira_caftan_05/', '_blank');
     instaGrid.appendChild(d);
   }
 }
