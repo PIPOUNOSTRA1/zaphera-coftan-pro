@@ -1,5 +1,9 @@
 
-const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' ? 'https://zaphera-coftan-pro-1-m.onrender.com' : '';
+const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' 
+  ? 'https://zaphera-coftan-pro-1-m.onrender.com' 
+  : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') 
+    ? 'http://localhost:5000' 
+    : '';
 let ORDERS=[];
 let PRODUCTS=[];
 let CUSTOMERS=[];
@@ -48,6 +52,21 @@ window.addEventListener('DOMContentLoaded',async ()=>{
   renderProducts();
   updateDashboardStats();
   await loadStoreSettings();
+
+  // Background refresh polling every 8 seconds to automatically show new orders
+  setInterval(async () => {
+    try {
+      const freshOrders = await loadOrders();
+      if (freshOrders.length !== ORDERS.length) {
+        console.log('🔄 New orders detected via background polling. Refreshing stats & order table.');
+        ORDERS = freshOrders;
+        renderOrders(ORDERS);
+        updateDashboardStats();
+      }
+    } catch (err) {
+      console.warn('Background update fetch failed:', err);
+    }
+  }, 8000);
 });
 
 function toggleMobileSidebar() {
