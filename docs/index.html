@@ -3593,7 +3593,7 @@ const translations = {
 };
 
 /* ---------------- Product Database ---------------- */
-const productsData = [
+let productsData = [
   {
     id: 'caftan-zahia',
     name: 'قفطان "لالة زاهية"',
@@ -4810,6 +4810,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize dynamic pixels on page load
   initDynamicPixels();
+
+  // Load products from API
+  fetch(API_URL + '/products')
+    .then(res => {
+      if (res.ok) return res.json();
+      throw new Error('API products load failed');
+    })
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        productsData = data;
+        renderProducts();
+        renderCart();
+      }
+    })
+    .catch(err => console.warn('Using local fallback products:', err));
 
   // Record visit traffic on server
   fetch(API_URL + '/visit', { method: 'POST' }).catch(err => console.warn('Failed to track visit on server', err));

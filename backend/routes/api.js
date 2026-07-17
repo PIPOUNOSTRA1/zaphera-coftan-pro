@@ -14,6 +14,9 @@ router.delete('/orders/:id', orderController.deleteOrder);
 // Dashboard & Stats endpoints
 router.get('/dashboard', dashController.getDashboardStats);
 router.get('/products', dashController.getProducts);
+router.post('/products', dashController.addProduct);
+router.put('/products/:id', dashController.updateProduct);
+router.delete('/products/:id', dashController.deleteProduct);
 router.get('/customers', dashController.getCustomers);
 router.get('/statistics', dashController.getStatistics);
 

@@ -115,7 +115,7 @@
     <div class="page" id="page-products">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
         <div><div style="font-size:1.15rem;font-weight:700;">👘 إدارة المنتجات</div><div style="font-size:.8rem;color:var(--text2);margin-top:3px;">8 منتجات نشطة</div></div>
-        <button class="btn btn-gold" onclick="document.getElementById('addProductModal').classList.add('open')">+ إضافة منتج</button>
+        <button class="btn btn-gold" onclick="openAddProductModal()">+ إضافة منتج</button>
       </div>
       <div class="products-grid" id="productsGrid"></div>
     </div>
@@ -237,20 +237,94 @@
 
 <!-- ADD PRODUCT MODAL -->
 <div class="overlay" id="addProductModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <div class="modal-title">👘 إضافة منتج جديد</div>
+  <div class="modal" style="width:700px; max-width:95vw;">
+    <div class="modal-title" id="productModalTitle">👑 إضافة منتج جديد</div>
+    <input type="hidden" id="mProdIdHidden">
+    
     <div class="form-row">
-      <div class="form-group"><label>اسم المنتج</label><input type="text" placeholder="مثال: القفطان الملكي"></div>
-      <div class="form-group"><label>الفئة</label><select><option>قفطان</option><option>كراكو</option><option>فساتين سهرة</option><option>فساتين زفاف</option></select></div>
+      <div class="form-group">
+        <label>اسم المنتج (بالعربية)</label>
+        <input type="text" id="mProdName" placeholder="مثال: قفطان لالة زاهية">
+      </div>
+      <div class="form-group">
+        <label>اسم المنتج (بالفرنسية)</label>
+        <input type="text" id="mProdNameFr" placeholder="Example: Caftan Lalla Zahia">
+      </div>
     </div>
+    
     <div class="form-row">
-      <div class="form-group"><label>السعر (دج)</label><input type="number" placeholder="0"></div>
-      <div class="form-group"><label>المخزون</label><input type="number" placeholder="0"></div>
+      <div class="form-group">
+        <label>المعرف الفريد (ID) - بالإنجليزية وبدون مسافات</label>
+        <input type="text" id="mProdId" placeholder="مثال: caftan-zahia">
+      </div>
+      <div class="form-group">
+        <label>سعر المنتج (دج)</label>
+        <input type="number" id="mProdPrice" placeholder="0">
+      </div>
     </div>
-    <div class="form-group" style="margin-bottom:14px;"><label>الوصف</label><textarea placeholder="وصف المنتج..."></textarea></div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>السعر القديم (دج) - اختياري للتخفيض</label>
+        <input type="number" id="mProdOldPrice" placeholder="مثال: 58000">
+      </div>
+      <div class="form-group">
+        <label>الصورة الرئيسية للمنتج (رابط أو مسار)</label>
+        <input type="text" id="mProdImage" placeholder="مثال: assets/caftan-zahia.png">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>الوسم بالعربية</label>
+        <input type="text" id="mProdTag" placeholder="مثال: جديد / الأكثر مبيعاً">
+      </div>
+      <div class="form-group">
+        <label>الوسم بالفرنسية</label>
+        <input type="text" id="mProdTagFr" placeholder="Example: Nouveau / Populaire">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-bottom:14px;">
+      <label>روابط الصور الإضافية (تفاصيل المنتج) - تفصل بينها بفاصلة `,`</label>
+      <input type="text" id="mProdImages" placeholder="مثال: assets/caftan-zahia-detail1.png, assets/caftan-zahia-detail2.png">
+    </div>
+
+    <div class="form-group" style="margin-bottom:14px;">
+      <label>أقسام عرض المنتج في المتجر (الشبكات المتقاطعة Grids)</label>
+      <div style="display:flex; gap:16px; flex-wrap:wrap; background:var(--bg3); padding:10px; border-radius:8px; border:1px solid var(--border);">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
+          <input type="checkbox" name="mProdGrids" value="grid-new"> القسم الجديد (New)
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
+          <input type="checkbox" name="mProdGrids" value="grid-caftan"> قفطان (Caftans)
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
+          <input type="checkbox" name="mProdGrids" value="grid-karakou"> كراكو (Karakou)
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
+          <input type="checkbox" name="mProdGrids" value="grid-wedding"> فساتين زفاف (Wedding)
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:0.83rem;">
+          <input type="checkbox" name="mProdGrids" value="grid-best"> الأكثر مبيعاً (Best Sellers)
+        </label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>وصف المنتج بالعربية</label>
+        <textarea id="mProdDesc" placeholder="قفطان مخملي راقٍ مطرز يدوياً..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>وصف المنتج بالفرنسية</label>
+        <textarea id="mProdDescFr" placeholder="Caftan d'exception en velours..."></textarea>
+      </div>
+    </div>
+
     <div class="modal-footer">
-      <button class="btn btn-gold" onclick="document.getElementById('addProductModal').classList.remove('open')">✅ حفظ المنتج</button>
-      <button class="btn btn-outline" onclick="document.getElementById('addProductModal').classList.remove('open')">إلغاء</button>
+      <button class="btn btn-gold" onclick="saveProductForm()">✅ حفظ المنتج</button>
+      <button class="btn btn-outline" onclick="closeProductModal()">إلغاء</button>
     </div>
   </div>
 </div>

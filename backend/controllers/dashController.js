@@ -15,6 +15,29 @@ const MASTER_PRODUCTS = [
   { id: '8', emoji: '🌟', name: 'كراكو الليلة البيضاء', price: 16800, stock: 'out', stockLabel: 'نفد المخزون' }
 ];
 
+const PRODUCTS_FILE = path.join(__dirname, '..', 'data', 'products.json');
+
+function loadProducts() {
+  try {
+    if (fs.existsSync(PRODUCTS_FILE)) {
+      return JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf8') || '[]');
+    }
+  } catch (err) {
+    console.error('Error reading products file:', err);
+  }
+  return [];
+}
+
+function saveProducts(products) {
+  try {
+    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.error('Error writing products file:', err);
+    return false;
+  }
+}
+
 function getOrders() {
   try {
     if (fs.existsSync(ORDERS_FILE)) {
@@ -89,9 +112,10 @@ exports.getDashboardStats = async (req, res) => {
       });
     });
 
+    const productsList = loadProducts();
     const bestProducts = Object.entries(productStats)
       .map(([name, sold]) => {
-        const prodInfo = MASTER_PRODUCTS.find(p => p.name === name) || {};
+        const prodInfo = productsList.find(p => p.name === name) || {};
         return {
           name,
           sold,
@@ -169,7 +193,7 @@ exports.getProducts = async (req, res) => {
       });
     });
 
-    const products = MASTER_PRODUCTS.map(p => ({
+    const products = loadProducts().map(p => ({
       ...p,
       sold: productStats[p.name] || 0
     }));
@@ -178,6 +202,106 @@ exports.getProducts = async (req, res) => {
   } catch (err) {
     console.error('Get Products Error:', err);
     res.status(500).json({ error: 'Failed to retrieve products' });
+  }
+};
+
+// POST /api/products
+exports.addProduct = async (req, res) => {
+  try {
+    const products = loadProducts();
+    const newProduct = req.body;
+    
+    if (!newProduct.name || !newProduct.price) {
+      return res.status(400).json({ error: 'Name and Price are required' });
+    }
+    
+    if (!newProduct.id) {
+      newProduct.id = 'prod-' + Date.now();
+    }
+    
+    if (products.some(p => p.id === newProduct.id)) {
+      return res.status(400).json({ error: 'Product ID already exists' });
+    }
+    
+    const productToAdd = {
+      id: newProduct.id,
+      name: newProduct.name,
+      name_fr: newProduct.name_fr || newProduct.name,
+      price: Number(newProduct.price),
+      oldPrice: newProduct.oldPrice ? Number(newProduct.oldPrice) : null,
+      tag: newProduct.tag || null,
+      tag_fr: newProduct.tag_fr || null,
+      image: newProduct.image || 'assets/caftan-zahia.png',
+      images: Array.isArray(newProduct.images) ? newProduct.images : [],
+      grids: Array.isArray(newProduct.grids) ? newProduct.grids : ['grid-new'],
+      desc: newProduct.desc || '',
+      desc_fr: newProduct.desc_fr || ''
+    };
+    
+    products.push(productToAdd);
+    saveProducts(products);
+    
+    res.status(201).json({ success: true, product: productToAdd });
+  } catch (err) {
+    console.error('Add Product Error:', err);
+    res.status(500).json({ error: 'Failed to add product' });
+  }
+};
+
+// PUT /api/products/:id
+exports.updateProduct = async (req, res) => {
+  try {
+    const products = loadProducts();
+    const prodId = req.params.id;
+    const index = products.findIndex(p => p.id === prodId);
+    
+    if (index === -1) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    const updatedData = req.body;
+    
+    products[index] = {
+      ...products[index],
+      name: updatedData.name || products[index].name,
+      name_fr: updatedData.name_fr || products[index].name_fr,
+      price: updatedData.price !== undefined ? Number(updatedData.price) : products[index].price,
+      oldPrice: updatedData.oldPrice !== undefined ? (updatedData.oldPrice ? Number(updatedData.oldPrice) : null) : products[index].oldPrice,
+      tag: updatedData.tag !== undefined ? (updatedData.tag || null) : products[index].tag,
+      tag_fr: updatedData.tag_fr !== undefined ? (updatedData.tag_fr || null) : products[index].tag_fr,
+      image: updatedData.image || products[index].image,
+      images: Array.isArray(updatedData.images) ? updatedData.images : products[index].images,
+      grids: Array.isArray(updatedData.grids) ? updatedData.grids : products[index].grids,
+      desc: updatedData.desc !== undefined ? updatedData.desc : products[index].desc,
+      desc_fr: updatedData.desc_fr !== undefined ? updatedData.desc_fr : products[index].desc_fr
+    };
+    
+    saveProducts(products);
+    
+    res.status(200).json({ success: true, product: products[index] });
+  } catch (err) {
+    console.error('Update Product Error:', err);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+};
+
+// DELETE /api/products/:id
+exports.deleteProduct = async (req, res) => {
+  try {
+    const products = loadProducts();
+    const prodId = req.params.id;
+    const initialLength = products.length;
+    const filtered = products.filter(p => p.id !== prodId);
+    
+    if (filtered.length === initialLength) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    saveProducts(filtered);
+    res.status(200).json({ success: true, message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error('Delete Product Error:', err);
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 };
 

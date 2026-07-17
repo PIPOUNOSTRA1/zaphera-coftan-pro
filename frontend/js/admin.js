@@ -1,10 +1,25 @@
 
 const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' ? 'https://zaphera-coftan-pro-1-m.onrender.com' : '';
 let ORDERS=[];
-const PRODUCTS=[{emoji:'👘',name:'القفطان الملكي الذهبي',price:18500,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌸',name:'كراكو السهرة الفضي',price:12000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'💍',name:'فستان الزفاف الأبيض',price:35000,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'🌙',name:'القفطان الأسود المطرز',price:22000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'✨',name:'كراكو التراث الجزائري',price:9800,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌺',name:'قفطان الربيع المنقوش',price:14500,sold:0,stock:'low',stockLabel:'مخزون منخفض'},{emoji:'👑',name:'القفطان الإمبراطوري',price:45000,sold:0,stock:'in',stockLabel:'متوفر'},{emoji:'🌟',name:'كراكو الليلة البيضاء',price:16800,sold:0,stock:'out',stockLabel:'نفد المخزون'}];
+let PRODUCTS=[];
 let CUSTOMERS=[];
 let WILAYAS_DATA=[];
 let REVENUE=[];
+
+async function loadProductsFromAPI() {
+  try {
+    const res = await fetch(BACKEND_URL + '/api/products');
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Backend server unreachable, falling back to local fallback products', err);
+  }
+  return [
+    { id: "caftan-zahia", name: 'قفطان "لالة زاهية"', price: 48000, tag: "جديد", image: "assets/caftan-zahia.png" },
+    { id: "karakou-velvet", name: "كراكو مخمل ذهبي", price: 62000, tag: "الأكثر رواجاً", image: "assets/karakou-velvet.png" }
+  ];
+}
 const WILAYAS_LIST=['أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار','البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو','الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس','عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر','ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف','تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة','عين الدفلى','النعامة','عين تيموشنت','غرداية','غليزان','المغير','المنيعة','أولاد جلال','برج باجي مختار','بني عباس','تيميمون','تقرت','جانت','عين صالح','عين قزام'];
 
 async function loadOrders() {
@@ -27,6 +42,7 @@ window.addEventListener('DOMContentLoaded',async ()=>{
     WILAYAS_LIST.forEach(w=>{const o=document.createElement('option');o.textContent=w;sel.appendChild(o);});
   }
   
+  PRODUCTS = await loadProductsFromAPI();
   ORDERS = await loadOrders();
   renderOrders(ORDERS);
   renderProducts();
@@ -347,6 +363,172 @@ function updateDashboardStats() {
   }
 }
 
-function renderProducts(){document.getElementById('productsGrid').innerHTML=PRODUCTS.map(p=>`<div class="prod-card"><div class="prod-img">${p.emoji}</div><div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-price">${p.price.toLocaleString()} دج</div><div class="prod-sold">تم بيع ${p.sold} وحدة</div><span class="prod-stock ${p.stock}">${p.stockLabel}</span></div></div>`).join('');}
+function renderProducts() {
+  const container = document.getElementById('productsGrid');
+  if (!container) return;
+  
+  const productsCountEl = document.querySelector('#page-products div div div:nth-child(2)');
+  if (productsCountEl) {
+    productsCountEl.textContent = `${PRODUCTS.length} منتجات نشطة`;
+  }
+  
+  container.innerHTML = PRODUCTS.map(p => {
+    const mainImg = p.image || 'assets/caftan-zahia.png';
+    const tagText = p.tag ? `<span class="prod-stock in" style="margin-top:0; margin-right:8px;">${p.tag}</span>` : '';
+    const oldPriceText = p.oldPrice ? `<span style="text-decoration:line-through; font-size:0.75rem; color:var(--text2); margin-right:8px;">${p.oldPrice.toLocaleString()} دج</span>` : '';
+    
+    return `
+      <div class="prod-card" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+        <div>
+          <div class="prod-img" style="background-image:url('${mainImg}'); background-size:cover; background-position:center; height:180px;"></div>
+          <div class="prod-info">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+              <div class="prod-name" style="margin-bottom:0; font-weight:700;">${p.name}</div>
+              ${tagText}
+            </div>
+            <div style="font-size:0.75rem; color:var(--text2); margin-bottom:8px; direction:ltr; text-align:right;">${p.id}</div>
+            <div class="prod-price">${p.price.toLocaleString()} دج ${oldPriceText}</div>
+            <div class="prod-sold" style="margin-top:8px;">🎯 تم بيع ${p.sold || 0} وحدة</div>
+            <div style="font-size:0.72rem; color:var(--text2); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              📂 الأقسام: ${p.grids ? p.grids.join(', ') : 'بدون'}
+            </div>
+          </div>
+        </div>
+        <div style="padding:14px; border-top:1px solid rgba(255,255,255,0.04); display:flex; gap:8px;">
+          <button class="btn btn-outline" style="flex:1; padding:6px 10px; font-size:0.78rem;" onclick="openEditProductModal('${p.id}')">✏️ تعديل</button>
+          <button class="btn btn-outline" style="flex:1; padding:6px 10px; font-size:0.78rem; border-color:var(--red); color:var(--red);" onclick="deleteProduct('${p.id}')">🗑️ حذف</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddProductModal() {
+  document.getElementById('productModalTitle').textContent = '👑 إضافة منتج جديد';
+  document.getElementById('mProdIdHidden').value = '';
+  document.getElementById('mProdId').value = '';
+  document.getElementById('mProdId').disabled = false;
+  document.getElementById('mProdName').value = '';
+  document.getElementById('mProdNameFr').value = '';
+  document.getElementById('mProdPrice').value = '';
+  document.getElementById('mProdOldPrice').value = '';
+  document.getElementById('mProdImage').value = 'assets/caftan-zahia.png';
+  document.getElementById('mProdTag').value = '';
+  document.getElementById('mProdTagFr').value = '';
+  document.getElementById('mProdImages').value = '';
+  document.getElementById('mProdDesc').value = '';
+  document.getElementById('mProdDescFr').value = '';
+  document.querySelectorAll('input[name="mProdGrids"]').forEach(cb => cb.checked = false);
+  document.getElementById('addProductModal').classList.add('open');
+}
+
+function openEditProductModal(productId) {
+  const p = PRODUCTS.find(item => item.id === productId);
+  if (!p) return;
+  
+  document.getElementById('productModalTitle').textContent = '✏️ تعديل منتج: ' + p.name;
+  document.getElementById('mProdIdHidden').value = p.id;
+  document.getElementById('mProdId').value = p.id;
+  document.getElementById('mProdId').disabled = true;
+  document.getElementById('mProdName').value = p.name || '';
+  document.getElementById('mProdNameFr').value = p.name_fr || '';
+  document.getElementById('mProdPrice').value = p.price || '';
+  document.getElementById('mProdOldPrice').value = p.oldPrice || '';
+  document.getElementById('mProdImage').value = p.image || '';
+  document.getElementById('mProdTag').value = p.tag || '';
+  document.getElementById('mProdTagFr').value = p.tag_fr || '';
+  document.getElementById('mProdImages').value = p.images ? p.images.join(', ') : '';
+  document.getElementById('mProdDesc').value = p.desc || '';
+  document.getElementById('mProdDescFr').value = p.desc_fr || '';
+  
+  document.querySelectorAll('input[name="mProdGrids"]').forEach(cb => {
+    cb.checked = p.grids ? p.grids.includes(cb.value) : false;
+  });
+  
+  document.getElementById('addProductModal').classList.add('open');
+}
+
+function closeProductModal() {
+  document.getElementById('addProductModal').classList.remove('open');
+}
+
+async function saveProductForm() {
+  const idHidden = document.getElementById('mProdIdHidden').value;
+  const id = document.getElementById('mProdId').value.trim();
+  const name = document.getElementById('mProdName').value.trim();
+  const name_fr = document.getElementById('mProdNameFr').value.trim();
+  const price = Number(document.getElementById('mProdPrice').value) || 0;
+  const oldPriceVal = document.getElementById('mProdOldPrice').value.trim();
+  const oldPrice = oldPriceVal ? Number(oldPriceVal) : null;
+  const image = document.getElementById('mProdImage').value.trim();
+  const tag = document.getElementById('mProdTag').value.trim();
+  const tag_fr = document.getElementById('mProdTagFr').value.trim();
+  const imagesStr = document.getElementById('mProdImages').value.trim();
+  const images = imagesStr ? imagesStr.split(',').map(s => s.trim()) : [];
+  const desc = document.getElementById('mProdDesc').value.trim();
+  const desc_fr = document.getElementById('mProdDescFr').value.trim();
+  
+  const grids = [];
+  document.querySelectorAll('input[name="mProdGrids"]:checked').forEach(cb => {
+    grids.push(cb.value);
+  });
+  
+  if (!id || !name || !price) {
+    alert('⚠️ يرجى ملء حقول المعرف (ID)، اسم المنتج، والسعر!');
+    return;
+  }
+  
+  const payload = {
+    id, name, name_fr, price, oldPrice, tag, tag_fr, image, images, grids, desc, desc_fr
+  };
+  
+  const isEdit = idHidden !== '';
+  const url = isEdit ? BACKEND_URL + '/api/products/' + idHidden : BACKEND_URL + '/api/products';
+  const method = isEdit ? 'PUT' : 'POST';
+  
+  try {
+    const res = await fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if (res.ok) {
+      alert(isEdit ? '✅ تم تعديل المنتج بنجاح!' : '✅ تم إضافة المنتج بنجاح!');
+      PRODUCTS = await loadProductsFromAPI();
+      renderProducts();
+      closeProductModal();
+    } else {
+      const errData = await res.json();
+      alert('❌ فشل حفظ المنتج: ' + (errData.error || 'خطأ غير معروف'));
+    }
+  } catch (err) {
+    console.error('Save product error:', err);
+    alert('❌ خطأ في الاتصال بالخادم!');
+  }
+}
+
+async function deleteProduct(productId) {
+  if (!confirm('⚠️ هل أنتِ متأكدة من حذف هذا المنتج نهائياً؟')) return;
+  
+  try {
+    const res = await fetch(BACKEND_URL + '/api/products/' + productId, {
+      method: 'DELETE'
+    });
+    
+    if (res.ok) {
+      alert('✅ تم حذف المنتج بنجاح!');
+      PRODUCTS = await loadProductsFromAPI();
+      renderProducts();
+    } else {
+      const errData = await res.json();
+      alert('❌ فشل حذف المنتج: ' + (errData.error || 'خطأ غير معروف'));
+    }
+  } catch (err) {
+    console.error('Delete product error:', err);
+    alert('❌ خطأ في الاتصال بالخادم!');
+  }
+}
+
 function renderWilayas(){}
 function renderChart(id){}
