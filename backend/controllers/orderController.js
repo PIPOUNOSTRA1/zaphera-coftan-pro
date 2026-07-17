@@ -26,6 +26,25 @@ function saveOrdersToFile(orders) {
   }
 }
 
+function normalizePhoneNumber(phone) {
+  if (!phone) return '';
+  // Remove all non-digits
+  let cleaned = phone.replace(/\D/g, '');
+  // Remove leading 00 if any
+  if (cleaned.startsWith('00')) {
+    cleaned = cleaned.substring(2);
+  }
+  // If it starts with 213, remove it
+  if (cleaned.startsWith('213') && cleaned.length > 8) {
+    cleaned = cleaned.substring(3);
+  }
+  // Remove leading 0 if any
+  if (cleaned.startsWith('0')) {
+    cleaned = cleaned.substring(1);
+  }
+  return cleaned;
+}
+
 // POST /api/orders
 exports.createOrder = async (req, res) => {
   try {
@@ -34,15 +53,21 @@ exports.createOrder = async (req, res) => {
     const orderId = req.body.id || 'ZF-' + Math.floor(1000 + Math.random() * 9000);
     const dateStr = req.body.date || new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
-    const phoneClean = (req.body.phone || '').replace(/\s+/g, '');
-    const productClean = req.body.product;
-    const duplicateWindow = 5 * 60 * 1000; // 5 minutes
+    const phoneClean = normalizePhoneNumber(req.body.phone);
+    const productClean = (req.body.product || '').trim();
+    const duplicateWindow = 24 * 60 * 60 * 1000; // 24 hours
 
     const isDuplicate = orders.find(o => {
-      const storedPhone = (o.phone || '').replace(/\s+/g, '');
-      const isSamePhone = storedPhone === phoneClean;
-      const isSameProduct = o.product === productClean;
-      const isRecent = o.timestamp && (Date.now() - o.timestamp < duplicateWindow);
+      const storedPhone = normalizePhoneNumber(o.phone);
+      const isSamePhone = storedPhone === phoneClean && phoneClean !== '';
+      const isSameProduct = (o.product || '').trim() === productClean;
+      
+      let isRecent = false;
+      if (o.timestamp) {
+        isRecent = Date.now() - o.timestamp < duplicateWindow;
+      } else if (o.date) {
+        isRecent = o.date === dateStr;
+      }
       return isSamePhone && isSameProduct && isRecent;
     });
 
