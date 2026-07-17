@@ -4161,6 +4161,12 @@ function renderCart() {
   document.getElementById('cartSubtotal').textContent = formatPrice(subtotal);
   document.getElementById('cartShipping').textContent = shippingCost > 0 ? formatPrice(shippingCost) : '—';
   document.getElementById('cartTotal').textContent = formatPrice(totalCost);
+
+  const submitBtn = document.getElementById('submitOrderBtn');
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = translations[currentLang].confirm_order;
+  }
 }
 
 function updateHeaderBadges() {
@@ -4294,6 +4300,12 @@ function handleOrderSubmit(e) {
   if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
     alert(translations[currentLang].validation_phone);
     return;
+  }
+
+  const submitBtn = document.getElementById('submitOrderBtn');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = currentLang === 'ar' ? '⏳ جاري إرسال الطلب...' : '⏳ Envoi de la commande...';
   }
   
   const selectedWilaya = wilayas.find(w => w.code === wilayaCode);

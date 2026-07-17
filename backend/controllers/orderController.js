@@ -34,6 +34,23 @@ exports.createOrder = async (req, res) => {
     const orderId = req.body.id || 'ZF-' + Math.floor(1000 + Math.random() * 9000);
     const dateStr = req.body.date || new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
+    const phoneClean = (req.body.phone || '').replace(/\s+/g, '');
+    const productClean = req.body.product;
+    const duplicateWindow = 5 * 60 * 1000; // 5 minutes
+
+    const isDuplicate = orders.find(o => {
+      const storedPhone = (o.phone || '').replace(/\s+/g, '');
+      const isSamePhone = storedPhone === phoneClean;
+      const isSameProduct = o.product === productClean;
+      const isRecent = o.timestamp && (Date.now() - o.timestamp < duplicateWindow);
+      return isSamePhone && isSameProduct && isRecent;
+    });
+
+    if (isDuplicate) {
+      console.warn(`⚠️ Duplicate order detected from ${req.body.phone} for "${req.body.product}". Skipping storage and integrations.`);
+      return res.status(200).json({ success: true, duplicate: true, order: isDuplicate });
+    }
+
     const newOrder = {
       id: orderId.replace('#', ''),
       name: req.body.name,
@@ -47,6 +64,7 @@ exports.createOrder = async (req, res) => {
       amount: Number(req.body.amount) || 0,
       status: req.body.status || 'pending',
       date: dateStr,
+      timestamp: Date.now(),
       source: req.body.source || 'Direct',
       utm: req.body.utm || '',
       pixelEventId: req.body.pixelEventId || `ZF-EV-${orderId}`,
