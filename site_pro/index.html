@@ -5123,8 +5123,10 @@ function openProductPage(productId) {
   
   // Reset delivery type
   ppDeliveryType = 'home';
-  document.getElementById('ppDeliveryHome').classList.add('active');
-  document.getElementById('ppDeliveryDesk').classList.remove('active');
+  const homeBtn = document.getElementById('ppDeliveryHome');
+  const deskBtn = document.getElementById('ppDeliveryDesk');
+  if (homeBtn) homeBtn.classList.add('active');
+  if (deskBtn) deskBtn.classList.remove('active');
   
   // Render reviews
   ppRenderReviews(productId);
