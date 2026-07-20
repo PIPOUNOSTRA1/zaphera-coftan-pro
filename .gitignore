@@ -1,6 +1,10 @@
 # Node
 node_modules/
 
+# Environment Variables (NEVER commit these!)
+.env
+*.env
+
 # Logs
 *.log
 

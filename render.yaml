@@ -1,7 +1,7 @@
 services:
-  # Backend Web Service
+  # Full-Stack Web Service (Backend serves Frontend)
   - type: web
-    name: zaphera-backend
+    name: zaphera-caftan
     env: node
     plan: free
     region: oregon
@@ -11,9 +11,11 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 5000
       - key: CORS_ORIGIN
-        value: "*"
-      # Google Sheets Configurations (Render will prompt you for these values)
+        value: "https://zephira-caftan.shop,https://www.zephira-caftan.shop"
+      # Google Sheets Configurations
       - key: GOOGLE_SERVICE_ACCOUNT_EMAIL
         sync: false
       - key: GOOGLE_PRIVATE_KEY
@@ -35,12 +37,3 @@ services:
         sync: false
       - key: SNAP_ACCESS_TOKEN
         sync: false
-
-  # Frontend Static Site
-  - type: web
-    name: zaphera-frontend
-    runtime: static
-    plan: free
-    region: oregon
-    staticPublishPath: site_pro
-    buildCommand: ""

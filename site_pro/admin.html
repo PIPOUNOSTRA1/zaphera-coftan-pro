@@ -760,11 +760,9 @@ input:checked + .slider:before {
 </div>
 
 <script>
-const BACKEND_URL = window.location.hostname === 'zaphera-coftan-pro-1.onrender.com' 
-  ? 'https://zaphera-coftan-pro-1-m.onrender.com' 
-  : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') 
-    ? 'http://localhost:5000' 
-    : '';
+const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') 
+  ? 'http://localhost:5000' 
+  : ''; // Production: same-origin (zephira-caftan.shop)
 let ORDERS=[];
 let PRODUCTS=[];
 let CUSTOMERS=[];
