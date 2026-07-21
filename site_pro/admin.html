@@ -340,8 +340,267 @@ input:checked + .slider:before {
   font-size: 0.7rem;
   color: var(--text2);
 }
+
+/* ═══════════════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════════════ */
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #09080a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cairo', sans-serif;
+}
+#loginScreen.hidden {
+  display: none;
+}
+.login-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 20%, rgba(212,168,83,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 75% 80%, rgba(212,168,83,0.05) 0%, transparent 55%),
+    #09080a;
+  overflow: hidden;
+}
+.login-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212,168,83,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,83,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.login-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 6s ease-in-out infinite alternate;
+}
+.login-orb-1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(212,168,83,0.12), transparent 70%);
+  top: -100px; left: -100px;
+}
+.login-orb-2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(184,134,58,0.09), transparent 70%);
+  bottom: -80px; right: -80px;
+  animation-delay: -3s;
+}
+@keyframes orbFloat {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(20px, 30px) scale(1.05); }
+}
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+  background: rgba(17, 16, 24, 0.85);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 0 0 1px rgba(212,168,83,0.05),
+    0 32px 80px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(212,168,83,0.1);
+  text-align: center;
+  animation: loginCardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes loginCardIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-logo {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #b8863a, #d4a853);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #1a1400;
+  font-weight: 900;
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(212,168,83,0.25);
+}
+.login-brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #f0ece6;
+  margin-bottom: 4px;
+}
+.login-brand span { color: #d4a853; }
+.login-sub {
+  font-size: 0.78rem;
+  color: rgba(160,152,128,0.8);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+.login-divider {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d4a853, transparent);
+  margin: 0 auto 32px;
+}
+.login-field {
+  position: relative;
+  margin-bottom: 16px;
+  text-align: right;
+}
+.login-field label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(160,152,128,0.9);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.login-field input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: rgba(26,24,37,0.8);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 12px;
+  color: #f0ece6;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.25s;
+  text-align: right;
+}
+.login-field input:focus {
+  border-color: rgba(212,168,83,0.6);
+  background: rgba(26,24,37,1);
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.08);
+}
+.login-field .field-icon {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  font-size: 1rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #b8863a, #d4a853);
+  border: none;
+  border-radius: 12px;
+  color: #1a1400;
+  font-family: 'Cairo', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: 1px;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(212,168,83,0.25);
+  position: relative;
+  overflow: hidden;
+}
+.login-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(212,168,83,0.35);
+}
+.login-btn:hover::before { opacity: 1; }
+.login-btn:active { transform: translateY(0); }
+.login-error {
+  display: none;
+  background: rgba(231,76,60,0.12);
+  border: 1px solid rgba(231,76,60,0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.82rem;
+  color: #e74c3c;
+  margin-top: 14px;
+  animation: shake 0.4s ease;
+}
+.login-error.show { display: block; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-6px); }
+  40%,80% { transform: translateX(6px); }
+}
+.login-footer-note {
+  margin-top: 28px;
+  font-size: 0.7rem;
+  color: rgba(160,152,128,0.4);
+  letter-spacing: 1px;
+}
+/* Logout btn in sidebar */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.2);
+  border-radius: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #e74c3c;
+  font-family: 'Cairo', sans-serif;
+  transition: all 0.2s;
+  margin-top: 8px;
+  width: 100%;
+  justify-content: center;
+}
+.logout-btn:hover {
+  background: rgba(231,76,60,0.18);
+  border-color: rgba(231,76,60,0.4);
+}
 </style>
 </head>
+<!-- ═══════ LOGIN SCREEN ═══════ -->
+<div id="loginScreen">
+  <div class="login-bg">
+    <div class="login-orb login-orb-1"></div>
+    <div class="login-orb login-orb-2"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-logo">ز</div>
+    <div class="login-brand">ZA<span>PH</span>ERA</div>
+    <div class="login-sub">لوحة التحكم الإدارية</div>
+    <div class="login-divider"></div>
+
+    <form onsubmit="handleLogin(event)">
+      <div class="login-field">
+        <label>اسم المستخدم</label>
+        <input type="text" id="loginUsername" placeholder="أدخل اسم المستخدم" autocomplete="username" autofocus>
+        <span class="field-icon">👤</span>
+      </div>
+      <div class="login-field">
+        <label>كلمة المرور</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+        <span class="field-icon">🔒</span>
+      </div>
+      <button type="submit" class="login-btn">🔑 &nbsp; دخول إلى لوحة التحكم</button>
+    </form>
+
+    <div class="login-error" id="loginError">❌ اسم المستخدم أو كلمة المرور غير صحيحة</div>
+    <div class="login-footer-note">ZAPHERA ADMIN · SECURE ACCESS</div>
+  </div>
+</div>
+
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
 
 <aside class="sidebar">
@@ -364,12 +623,15 @@ input:checked + .slider:before {
     <a class="nav-item" onclick="showPage('settings',this)"><span class="ni">⚙️</span> الإعدادات</a>
     <a class="nav-item" href="index.html" target="_blank"><span class="ni">🌐</span> المتجر المباشر</a>
   </nav>
-  <div class="sidebar-footer">
-    <div class="user-avatar">م</div>
-    <div class="user-info">
-      <div class="user-name">المدير العام</div>
-      <div class="user-role">✦ Super Admin</div>
+  <div class="sidebar-footer" style="flex-direction:column; align-items:stretch;">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:4px;">
+      <div class="user-avatar">ر</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarUsername">rami</div>
+        <div class="user-role">✦ Super Admin</div>
+      </div>
     </div>
+    <button class="logout-btn" onclick="handleLogout()">🚪 تسجيل الخروج</button>
   </div>
 </aside>
 
@@ -760,6 +1022,50 @@ input:checked + .slider:before {
 </div>
 
 <script>
+// ═══════════════════════════════════════
+// AUTH — Login / Logout
+// ═══════════════════════════════════════
+const ADMIN_USER = 'rami';
+const ADMIN_PASS = 'rami123';
+const AUTH_KEY   = 'zf_admin_auth';
+
+(function checkAuth() {
+  if (sessionStorage.getItem(AUTH_KEY) !== 'ok') {
+    document.getElementById('loginScreen').classList.remove('hidden');
+  } else {
+    document.getElementById('loginScreen').classList.add('hidden');
+  }
+})();
+
+function handleLogin(e) {
+  e.preventDefault();
+  const user = document.getElementById('loginUsername').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const err  = document.getElementById('loginError');
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    sessionStorage.setItem(AUTH_KEY, 'ok');
+    document.getElementById('loginScreen').classList.add('hidden');
+    err.classList.remove('show');
+    initDashboard();
+  } else {
+    err.classList.remove('show');
+    void err.offsetWidth; // restart animation
+    err.classList.add('show');
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginPassword').focus();
+  }
+}
+
+function handleLogout() {
+  sessionStorage.removeItem(AUTH_KEY);
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('loginUsername').focus();
+}
+
+// ═══════════════════════════════════════
 const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') 
   ? 'http://localhost:5000' 
   : ''; // Production: same-origin (zephira-caftan.shop)
